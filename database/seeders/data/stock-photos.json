@@ -1,0 +1,30 @@
+{
+  "_licence": "All photos are from Unsplash (https://unsplash.com/license): free for commercial use, no permission or attribution required. Replace with real IT Security Nepal photography from the admin panel when available.",
+  "photos": {
+    "home-hero-main":      { "id": "1569653402334-2e98fbaa80ee", "w": 1400, "alt": "Students working at computers in a bright computer lab" },
+    "home-hero-lab":       { "id": "1719159381981-1327b22aff9b", "w": 900,  "alt": "Students practising in a school computer lab" },
+    "home-hero-cert":      { "id": "1627556704290-2b1f5853ff78", "w": 900,  "alt": "Graduates throwing their caps in the air" },
+    "home-featured-main":  { "id": "1785682231847-93265d8e633d", "w": 1400, "alt": "Server rack with network and electronic equipment" },
+    "home-featured-soc":   { "id": "1548092372-0d1bd40894a3",   "w": 900,  "alt": "Close-up of a laptop screen in blue light" },
+    "home-featured-code":  { "id": "1515879218367-8466d910aaa4", "w": 900,  "alt": "Computer screen showing lines of code" },
+    "home-journey":        { "id": "1778489769184-45868633c527", "w": 1400, "alt": "Teacher guiding students on a computer in a classroom" },
+    "audience-individual": { "id": "1515378960530-7c0da6231fb1", "w": 900,  "alt": "Learner studying on a laptop" },
+    "audience-group":      { "id": "1522202176988-66273c2fd55f", "w": 1400, "alt": "Group of students learning together around a table" },
+    "about-environment":   { "id": "1524178232363-1fb2b075b655", "w": 1400, "alt": "Class in a training room with a projector screen" },
+    "corporate-hero":      { "id": "1542744173-8e7e53415bb0",   "w": 1400, "alt": "Trainer presenting to a team in a meeting room" },
+    "track-redhat":        { "id": "1695668548342-c0c1ad479aee", "w": 1000, "alt": "Rack of servers in a server room" },
+    "track-cybersecurity": { "id": "1550751827-4bd374c3f58b",   "w": 1000, "alt": "Glowing teal LED panel" },
+    "track-cisco":         { "id": "1544197150-b99a580bb7a8",   "w": 1000, "alt": "Blue network cables connected to a switch" },
+    "track-devops":        { "id": "1607799279861-4dd421887fb3", "w": 1000, "alt": "Laptop screen displaying colourful code" },
+    "track-microsoft":     { "id": "1784652852605-6945598f2af3", "w": 1000, "alt": "Modern data centre with rows of server cabinets" },
+    "track-comptia":       { "id": "1604754742629-3e5728249d73", "w": 1000, "alt": "Technician installing a component in a computer" },
+    "track-isc2":          { "id": "1614064641938-3bbee52942c7", "w": 1000, "alt": "Red padlock on a computer keyboard" },
+    "track-career":        { "id": "1531545514256-b1400bc00f31", "w": 1000, "alt": "People working together around a laptop" },
+    "post-rhcsa-certification-guide":                { "id": "1589330694653-ded6df03f754", "w": 1400, "alt": "Certificate with a red seal" },
+    "post-how-to-start-a-cybersecurity-career":      { "id": "1526374965328-7f61d4dc18c5", "w": 1400, "alt": "Green code characters on a dark screen" },
+    "post-linux-bootcamp-nepal":                     { "id": "1461749280684-dccba630e2f6", "w": 1400, "alt": "Monitor showing source code" },
+    "post-why-become-red-hat-certified-system-engineer": { "id": "1639066648921-82d4500abf1a", "w": 1400, "alt": "Large array of server equipment" },
+    "post-dashain-offer-it-security-nepal":          { "id": "1516321497487-e288fb19713f", "w": 1400, "alt": "Three people pointing at a laptop screen" },
+    "post-why-combo-offers-matter":                  { "id": "1486312338219-ce68d2c6f44d", "w": 1400, "alt": "Person working on a laptop" }
+  }
+}

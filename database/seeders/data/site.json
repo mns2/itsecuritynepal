@@ -1,0 +1,663 @@
+{
+  "name": "IT Security Nepal",
+  "legalName": "I.T. Security College of Computer Studies",
+  "tagline": "Network · System · Cybersecurity · Red Hat · DevOps training",
+  "description": "Red Hat Authorized Training Partner in Kathmandu offering hands-on Linux, cybersecurity, networking, cloud and DevOps certification training.",
+  "contact": {
+    "phonePrimary": {
+      "label": "+977 985-1165508",
+      "tel": "+9779851165508"
+    },
+    "phoneOffice": {
+      "label": "+977 981-8253111",
+      "tel": "+9779818253111"
+    },
+    "whatsapp": {
+      "number": "9779851165508",
+      "verify": true
+    },
+    "email": "info@itsecuritynepal.com",
+    "address": "New Baneshwor, Kathmandu, Nepal",
+    "mapUrl": "https://maps.app.goo.gl/DW75wDME6XNoqtUc6",
+    "hours": "Sunday – Friday, 6:30 AM – 8:00 PM",
+    "hoursShort": "Sun – Fri · 6:30 AM – 8:00 PM"
+  },
+  "social": [
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com/computerstudiesnepal",
+      "icon": "facebook"
+    },
+    {
+      "name": "LinkedIn",
+      "url": "https://www.linkedin.com/company/it-security-nepal-college-of-computer-studies/",
+      "icon": "linkedin"
+    },
+    {
+      "name": "Instagram",
+      "url": "https://www.instagram.com/it_security_nepal/",
+      "icon": "instagram"
+    }
+  ],
+  "announcement": {
+    "text": "Professional IT training in Kathmandu · Free career counselling before you enrol",
+    "linkText": "Book a session",
+    "url": "/contact/"
+  },
+  "trust": [
+    {
+      "value": "15+ years",
+      "label": "as a Red Hat Authorized Training Partner",
+      "icon": "award"
+    },
+    {
+      "value": "43",
+      "label": "certification-focused courses across 8 tracks",
+      "icon": "layers"
+    },
+    {
+      "value": "80%",
+      "label": "practical, lab-based class time",
+      "icon": "terminal"
+    },
+    {
+      "value": "1,580+",
+      "label": "students certified",
+      "icon": "graduation-cap",
+      "verify": "Home page says 1,580+, About page says 750+. Confirm the figure before launch."
+    }
+  ],
+  "categories": [
+    {
+      "id": "redhat",
+      "name": "Red Hat & Linux",
+      "short": "Red Hat",
+      "url": "/redhat/",
+      "icon": "server",
+      "tagline": "Official Red Hat courseware from an authorized partner.",
+      "intro": "Build enterprise Linux skills from first command to RHCE, then extend into OpenShift and OpenStack. IT Security Nepal has delivered Red Hat training as an authorized partner for more than 15 years.",
+      "objectives": [
+        "Administer Red Hat Enterprise Linux systems, users, storage and services",
+        "Prepare for the RHCSA (EX200) and RHCE (EX294) performance-based exams",
+        "Automate administration at scale with Ansible",
+        "Run containers and Kubernetes workloads on Red Hat OpenShift"
+      ],
+      "path": "linux",
+      "faqs": [
+        {
+          "q": "Which Red Hat course should I start with?",
+          "a": "Start with RH124 (Red Hat System Administration I). It assumes no prior Linux experience and is the first step toward RHCSA, followed by RH134."
+        },
+        {
+          "q": "Do I need RHCSA before RHCE?",
+          "a": "Yes. RHCE (RH294) builds on RHCSA-level skills, so complete RH124 and RH134 first."
+        },
+        {
+          "q": "Is the training based on official Red Hat material?",
+          "a": "Yes. As a Red Hat Authorized Training Partner, our Red Hat courses use official courseware and labs."
+        }
+      ]
+    },
+    {
+      "id": "cybersecurity",
+      "name": "Cybersecurity & Ethical Hacking",
+      "short": "Cybersecurity",
+      "url": "/ethical-hacking/",
+      "icon": "shield-check",
+      "tagline": "From SOC fundamentals to advanced penetration testing.",
+      "intro": "Learn to defend, detect and ethically attack systems in a hands-on lab. Programmes range from the beginner-friendly Junior Security Analyst Track to expert-level ethical hacking and penetration testing.",
+      "objectives": [
+        "Understand attacker methodology, from reconnaissance to post-exploitation",
+        "Analyse logs and investigate alerts the way a SOC analyst does",
+        "Run structured penetration tests and write actionable reports",
+        "Collect and preserve digital evidence for forensic investigations"
+      ],
+      "path": "security",
+      "faqs": [
+        {
+          "q": "I'm new to security. Where should I start?",
+          "a": "The Junior Security Analyst Track is designed for beginners with basic computer knowledge and builds toward entry-level SOC roles."
+        },
+        {
+          "q": "What do I need before Ethical Hacking Expert?",
+          "a": "An understanding of networking, IP addressing and Linux and Windows operating systems. A foundation course such as CompTIA Security+ is preferred."
+        }
+      ]
+    },
+    {
+      "id": "cisco",
+      "name": "Networking & Cisco",
+      "short": "Cisco",
+      "url": "/cisco/",
+      "icon": "network",
+      "tagline": "Routing, switching and enterprise network design.",
+      "intro": "Go from networking fundamentals to the enterprise core with Cisco-aligned training. Start with CCNA, then continue to CCNP-level ENCOR, ENARSI and data-centre technologies.",
+      "objectives": [
+        "Configure and troubleshoot routers, switches and VLANs",
+        "Design and secure enterprise networks",
+        "Implement advanced routing and services",
+        "Prepare for Cisco certification exams"
+      ],
+      "path": "network",
+      "faqs": [
+        {
+          "q": "Do I need experience before CCNA?",
+          "a": "No formal prerequisite is required, though basic computer and networking awareness helps. CompTIA Network+ is a good optional starting point."
+        }
+      ]
+    },
+    {
+      "id": "devops",
+      "name": "DevOps & Kubernetes",
+      "short": "DevOps",
+      "url": "/devops/",
+      "icon": "workflow",
+      "tagline": "CI/CD, containers and Kubernetes for modern teams.",
+      "intro": "Learn the tools and practices engineering teams use to ship software reliably: Git, CI/CD pipelines, containers, infrastructure automation and Kubernetes administration and security.",
+      "objectives": [
+        "Build CI/CD pipelines and automate deployments",
+        "Containerise applications with Docker",
+        "Administer Kubernetes clusters (CKA)",
+        "Secure clusters and workloads (CKS)"
+      ],
+      "path": "devops",
+      "faqs": [
+        {
+          "q": "Do I need Linux skills for DevOps?",
+          "a": "Yes. DevOps Mastery covers Linux fundamentals, but prior Linux experience (for example RH124/RH134) makes the course much easier."
+        }
+      ]
+    },
+    {
+      "id": "microsoft",
+      "name": "Microsoft Azure & Cloud",
+      "short": "Azure",
+      "url": "/microsoft/",
+      "icon": "cloud",
+      "tagline": "Administer, secure and design on Microsoft Azure.",
+      "intro": "Microsoft-aligned training for cloud administrators, architects, security analysts and data engineers, covering Azure, Microsoft 365, identity and security operations.",
+      "objectives": [
+        "Administer Azure subscriptions, networking and storage",
+        "Design secure, scalable Azure infrastructure",
+        "Operate Microsoft security tooling and identity services",
+        "Build data pipelines on Azure"
+      ],
+      "path": "cloud",
+      "faqs": [
+        {
+          "q": "Which Azure course comes first?",
+          "a": "Most learners start with AZ-104 (Azure Administrator) before moving to design (AZ-305) or DevOps (AZ-400)."
+        }
+      ]
+    },
+    {
+      "id": "comptia",
+      "name": "CompTIA Certifications",
+      "short": "CompTIA",
+      "url": "/comptia/",
+      "icon": "badge-check",
+      "tagline": "Vendor-neutral certifications, from A+ to CASP+.",
+      "intro": "Vendor-neutral CompTIA training for IT support, networking, Linux, cloud and security roles. A strong foundation for any IT career path.",
+      "objectives": [
+        "Build core IT support and hardware skills (A+)",
+        "Understand networks and security fundamentals (Network+, Security+)",
+        "Progress to analyst and advanced practitioner roles (CySA+, PenTest+, CASP+)"
+      ],
+      "path": "security",
+      "faqs": [
+        {
+          "q": "Which CompTIA certification is right for beginners?",
+          "a": "A+ for IT support roles, Network+ for networking, and Security+ as a first security certification."
+        }
+      ]
+    },
+    {
+      "id": "isc2",
+      "name": "ISC2 Security Certifications",
+      "short": "ISC2",
+      "url": "/isc2/",
+      "icon": "lock-keyhole",
+      "tagline": "Advanced CISSP and CCSP preparation.",
+      "intro": "Preparation for globally recognised ISC2 credentials for experienced security professionals: CISSP for security leadership and CCSP for cloud security.",
+      "objectives": [
+        "Master security and risk management principles",
+        "Design secure architectures for on-premises and cloud",
+        "Prepare for the CISSP and CCSP exams"
+      ],
+      "path": "security",
+      "faqs": [
+        {
+          "q": "Can beginners take CISSP?",
+          "a": "CISSP is aimed at experienced security practitioners. ISC2 sets professional experience requirements for certification; check them before enrolling."
+        }
+      ]
+    },
+    {
+      "id": "career",
+      "name": "Job-Ready Programs & Bootcamps",
+      "short": "Job-Ready",
+      "url": "/bootcamp/",
+      "icon": "briefcase-business",
+      "tagline": "Intensive, career-focused programmes.",
+      "intro": "Short, intensive programmes that get you working on real systems fast: a five-day Linux Bootcamp, a Job-Ready Program for roles in Australia and New Zealand, and Graphic Designing with AI.",
+      "objectives": [
+        "Gain job-ready technical skills in weeks, not semesters",
+        "Build a portfolio, resume and interview confidence",
+        "Prepare for the next certification on your path"
+      ],
+      "path": "linux",
+      "faqs": [
+        {
+          "q": "Who is the Job-Ready Program for?",
+          "a": "Students and fresh graduates who want to start an IT career in Australia or New Zealand."
+        },
+        {
+          "q": "When does the Linux Bootcamp run?",
+          "a": "Monday to Friday, 1:00 PM to 5:00 PM (4 hours daily, 20 hours total). A new batch starts every Monday."
+        }
+      ]
+    }
+  ],
+  "learningPaths": [
+    {
+      "id": "linux",
+      "name": "Linux Administrator",
+      "icon": "terminal",
+      "goal": "Run enterprise Linux servers",
+      "steps": [
+        {
+          "slug": "linux-bootcamp",
+          "note": "Optional fast start"
+        },
+        {
+          "slug": "red-hat-system-administration",
+          "note": "Foundations"
+        },
+        {
+          "slug": "red-hat-system-administration-ii",
+          "note": "RHCSA"
+        },
+        {
+          "slug": "red-hat-certified-system-engineer",
+          "note": "RHCE"
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security Analyst → Ethical Hacker",
+      "icon": "shield-check",
+      "goal": "Defend and test systems",
+      "steps": [
+        {
+          "slug": "comptia-security",
+          "note": "Security fundamentals"
+        },
+        {
+          "slug": "junior-security-analyst-track",
+          "note": "SOC skills"
+        },
+        {
+          "slug": "ethical-hacking-expert",
+          "note": "Offensive security"
+        },
+        {
+          "slug": "penetration-testing-course",
+          "note": "Professional testing"
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "name": "Network Engineer",
+      "icon": "network",
+      "goal": "Design and run enterprise networks",
+      "steps": [
+        {
+          "slug": "network-comptia-network",
+          "note": "Fundamentals"
+        },
+        {
+          "slug": "cisco-certified-network-associate",
+          "note": "CCNA"
+        },
+        {
+          "slug": "cisco-encor-350-401",
+          "note": "Enterprise core"
+        },
+        {
+          "slug": "cisco-enarsi-300-410",
+          "note": "Advanced routing"
+        }
+      ]
+    },
+    {
+      "id": "devops",
+      "name": "DevOps Engineer",
+      "icon": "workflow",
+      "goal": "Automate delivery and run Kubernetes",
+      "steps": [
+        {
+          "slug": "red-hat-system-administration",
+          "note": "Linux foundation"
+        },
+        {
+          "slug": "devops-mastery",
+          "note": "CI/CD & containers"
+        },
+        {
+          "slug": "certified-kubernetes-administrator",
+          "note": "CKA"
+        },
+        {
+          "slug": "certified-kubernetes-security-specialist",
+          "note": "CKS"
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "Azure Cloud Engineer",
+      "icon": "cloud",
+      "goal": "Administer and design on Azure",
+      "steps": [
+        {
+          "slug": "microsoft-azure-administrator",
+          "note": "Administrator"
+        },
+        {
+          "slug": "azure-infrastructure-architect-course",
+          "note": "Architect"
+        },
+        {
+          "slug": "az-400-microsoft-devops-course",
+          "note": "DevOps on Azure"
+        }
+      ]
+    }
+  ],
+  "trainingMethods": [
+    {
+      "id": "classroom",
+      "name": "Classroom Training",
+      "url": "/classroom-training/",
+      "icon": "presentation",
+      "short": "Learn in a group at our New Baneshwor training centre.",
+      "body": "Instructor-led classes in our Kathmandu centre, with group discussion, teamwork and hands-on lab exercises on real systems.",
+      "bestFor": "Learners who value structure, peer discussion and face-to-face mentoring.",
+      "features": [
+        "Live instructor-led sessions",
+        "Lab exercises on real systems",
+        "Group interaction and teamwork",
+        "Direct access to mentors between sessions"
+      ]
+    },
+    {
+      "id": "virtual",
+      "name": "Live Virtual Training",
+      "url": "/live-virtual-training/",
+      "icon": "monitor-play",
+      "short": "Real-time, instructor-led classes online.",
+      "body": "Live, instructor-led, real-time training in an online environment. Join from anywhere in Nepal or abroad with the same curriculum as classroom batches.",
+      "bestFor": "Working professionals and learners outside Kathmandu.",
+      "features": [
+        "Live sessions, not recordings",
+        "Remote lab access",
+        "Same curriculum as classroom",
+        "Ask questions in real time"
+      ]
+    },
+    {
+      "id": "one-on-one",
+      "name": "One-on-One Training",
+      "url": "/one-on-one-training/",
+      "icon": "user-round",
+      "short": "One student, one trainer, at your pace.",
+      "body": "Individual training with a dedicated trainer. The schedule and pace are built around your experience and goals.",
+      "bestFor": "Learners with specific goals, tight schedules or exam deadlines.",
+      "features": [
+        "Fully personalised pace",
+        "Flexible scheduling",
+        "Focus on your weak areas",
+        "Exam-focused coaching"
+      ]
+    },
+    {
+      "id": "flip",
+      "name": "Flip Class",
+      "url": "/flip-class/",
+      "icon": "repeat-2",
+      "short": "Learn online, practise in class.",
+      "verify": "Confirm Flip Class is still offered.",
+      "body": "Go through lessons and videos online, then complete activities and labs in the classroom with an instructor.",
+      "bestFor": "Self-motivated learners who want hands-on time with an instructor.",
+      "features": [
+        "Study theory at your own pace",
+        "Classroom time for hands-on labs",
+        "Instructor feedback on activities"
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "course": "linux-bootcamp",
+      "start": "Every Monday",
+      "schedule": "Mon – Fri · 1:00 – 5:00 PM",
+      "mode": "Classroom",
+      "status": "open",
+      "source": "live site"
+    },
+    {
+      "course": "devops-mastery",
+      "start": "Wednesday",
+      "schedule": "6:00 – 8:00 PM",
+      "mode": "Classroom / Live Online",
+      "status": "open",
+      "source": "live site ticker"
+    },
+    {
+      "course": "red-hat-system-administration-ii",
+      "start": "New batch",
+      "schedule": "8:00 – 9:00 PM",
+      "mode": "Classroom / Live Online",
+      "status": "few",
+      "source": "live site ticker (RHCSA)"
+    },
+    {
+      "course": "ethical-hacking-expert",
+      "start": "Ongoing",
+      "schedule": "Sun – Fri · 6:00 – 8:00 PM",
+      "mode": "Classroom",
+      "status": "open",
+      "source": "course page"
+    },
+    {
+      "course": "penetration-testing-course",
+      "start": "Tuesday",
+      "schedule": "7:00 – 9:00 PM",
+      "mode": "Live Online",
+      "status": "open",
+      "source": "course page"
+    },
+    {
+      "course": "junior-security-analyst-track",
+      "start": "To be announced",
+      "schedule": "To be announced",
+      "mode": "Classroom",
+      "status": "soon",
+      "source": "illustrative"
+    },
+    {
+      "course": "cisco-certified-network-associate",
+      "start": "To be announced",
+      "schedule": "To be announced",
+      "mode": "Classroom / Live Online",
+      "status": "soon",
+      "source": "illustrative"
+    },
+    {
+      "course": "job-ready",
+      "start": "Sunday",
+      "schedule": "3:00 – 5:00 PM",
+      "mode": "Classroom",
+      "status": "waitlist",
+      "source": "illustrative"
+    }
+  ],
+  "faqGroups": [
+    {
+      "id": "getting-started",
+      "name": "Getting started",
+      "items": [
+        {
+          "q": "Do you provide training for complete beginners?",
+          "a": "Yes. Courses are designed for learners at every stage, with a step-by-step approach so beginners build a strong foundation before moving to advanced topics. Good starting points are the Linux Bootcamp, RH124, CCNA, CompTIA A+ and the Junior Security Analyst Track."
+        },
+        {
+          "q": "How do I choose the right course?",
+          "a": "Use the Course Finder or book free counselling. We look at your background and career goal and recommend a learning path, not just a single course."
+        },
+        {
+          "q": "What are the prerequisites?",
+          "a": "Each course page lists its prerequisites. Many foundation courses only need basic computer skills; advanced courses build on earlier certifications."
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "name": "Classes & schedules",
+      "items": [
+        {
+          "q": "Can I study online?",
+          "a": "Yes. Live Virtual Training runs in real time with an instructor. Classroom, one-on-one and flip-class formats are also available."
+        },
+        {
+          "q": "When do batches start?",
+          "a": "New batches start regularly. See Upcoming Batches for current schedules, or contact us for the next start date of a specific course."
+        },
+        {
+          "q": "How practical are the classes?",
+          "a": "Around 80% of class time is practical, lab-based work on real systems."
+        }
+      ]
+    },
+    {
+      "id": "certification",
+      "name": "Certification",
+      "items": [
+        {
+          "q": "Are you an official Red Hat Training Partner?",
+          "a": "Yes. IT Security Nepal has been a Red Hat Authorized Training Partner for over 15 years and delivers Red Hat courses with official courseware and labs."
+        },
+        {
+          "q": "Do you help with certification exams?",
+          "a": "Yes. Courses are certification-focused and include exam guidance. Ask an advisor about exam registration for your certification."
+        }
+      ]
+    },
+    {
+      "id": "fees",
+      "name": "Fees & enrolment",
+      "items": [
+        {
+          "q": "How much do courses cost?",
+          "a": "Fees vary by course and training mode. Contact an advisor for current fees and any running offers."
+        },
+        {
+          "q": "How do I enrol?",
+          "a": "Send an enquiry from any course page, call us, or visit our office in New Baneshwor. An advisor will confirm the batch, fees and payment options."
+        }
+      ]
+    },
+    {
+      "id": "corporate",
+      "name": "Corporate training",
+      "items": [
+        {
+          "q": "Do you offer corporate training?",
+          "a": "Yes. We design customised programmes for organisations in cybersecurity, DevOps, cloud and infrastructure, aligned with your team's goals and technologies."
+        }
+      ]
+    }
+  ],
+  "postCourses": {
+    "rhcsa-certification-guide": [
+      "red-hat-system-administration",
+      "red-hat-system-administration-ii",
+      "linux-bootcamp"
+    ],
+    "how-to-start-a-cybersecurity-career": [
+      "junior-security-analyst-track",
+      "comptia-security",
+      "ethical-hacking-expert"
+    ],
+    "linux-bootcamp-nepal": [
+      "linux-bootcamp",
+      "red-hat-system-administration"
+    ],
+    "why-become-red-hat-certified-system-engineer": [
+      "red-hat-certified-system-engineer",
+      "red-hat-system-administration-ii"
+    ],
+    "dashain-offer-it-security-nepal": [
+      "red-hat-system-administration-ii",
+      "devops-mastery",
+      "cisco-certified-network-associate"
+    ],
+    "why-combo-offers-matter": [
+      "red-hat-system-administration-ii",
+      "devops-mastery"
+    ]
+  },
+  "postCategories": {
+    "rhcsa-certification-guide": "Certification guides",
+    "how-to-start-a-cybersecurity-career": "Career guides",
+    "linux-bootcamp-nepal": "Programmes",
+    "why-become-red-hat-certified-system-engineer": "Career guides",
+    "dashain-offer-it-security-nepal": "News & offers",
+    "why-combo-offers-matter": "News & offers"
+  },
+  "legal": [
+    {
+      "slug": "privacy-policy",
+      "title": "Privacy Policy"
+    },
+    {
+      "slug": "terms-and-conditions",
+      "title": "Terms and Conditions"
+    }
+  ],
+  "audiences": [
+    {
+      "id": "individual",
+      "name": "Individuals",
+      "url": "/course/",
+      "icon": "user-round",
+      "title": "Individual training",
+      "short": "Join a public batch or learn one-on-one at your own pace.",
+      "body": "Pick any course and join a scheduled classroom or live online batch, or book one-on-one sessions built around your experience and timetable.",
+      "points": [
+        "Public classroom and live online batches",
+        "One-on-one option for flexible schedules",
+        "Free career counselling before you enrol"
+      ],
+      "cta": "Browse courses"
+    },
+    {
+      "id": "group",
+      "name": "Groups",
+      "url": "/group-training/",
+      "icon": "users",
+      "title": "Group training",
+      "short": "Train together as friends, classmates, a team or an organisation.",
+      "body": "Bring a group of friends, classmates or colleagues, or a whole team from your organisation, and train together in a private batch with a schedule that suits everyone.",
+      "points": [
+        "Private batch for your group or team",
+        "Schedule agreed with the group",
+        "Classroom at our centre, on-site or live online"
+      ],
+      "cta": "Plan group training",
+      "verify": "Confirm group size limits and any group pricing before launch."
+    }
+  ]
+}
