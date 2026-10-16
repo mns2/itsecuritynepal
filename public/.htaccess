@@ -54,7 +54,7 @@ AddDefaultCharset UTF-8
 </IfModule>
 
 # Second line of defence when mod_rewrite rules are skipped
-<FilesMatch "^\.(?!well-known)|\.(env|log|sql|sqlite|bak|old|orig|swp|ini|sh|ps1|md)$|^(composer\.(json|lock)|package(-lock)?\.json|artisan|hot)$">
+<FilesMatch "^\.|\.(env|log|sql|sqlite|bak|old|orig|swp|ini|sh|ps1|md)$|^(composer\.(json|lock)|package(-lock)?\.json|artisan|hot)$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>

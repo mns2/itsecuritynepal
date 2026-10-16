@@ -1,9 +1,11 @@
 # =============================================================================
 #  Safety net for the PROJECT ROOT (itsn-laravel/).
 #  Normally the domain's document root points at itsn-laravel/public and this
-#  file is never used. If the whole project ends up inside public_html by
-#  mistake, this keeps .env, vendor/, storage/ etc. private and sends every
-#  request into public/.
+#  file only matters if the whole project ends up inside public_html: it then
+#  sends every request into public/ so .env, vendor/, storage/ stay private.
+#
+#  Note: Apache/LiteSpeed also apply this file to everything BELOW it (public/
+#  included), so it only blocks exact file names, never whole file types.
 # =============================================================================
 Options -Indexes -MultiViews
 
@@ -18,14 +20,8 @@ Options -Indexes -MultiViews
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 
-# If mod_rewrite is missing, refuse everything rather than expose the app
-<IfModule !mod_rewrite.c>
-    <IfModule mod_authz_core.c>
-        Require all denied
-    </IfModule>
-</IfModule>
-
-<FilesMatch "^\.|\.(env|log|sql|sqlite|json|lock|xml|md|ps1|sh|ini)$|^artisan$">
+# Secrets and project files that must never be served from anywhere
+<FilesMatch "^\.env|\.(log|sql|sqlite)$|^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|vite\.config\.js)$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
