@@ -117,13 +117,13 @@ AddDefaultCharset UTF-8
 </IfModule>
 
 # --- PHP version (cPanel / LiteSpeed) ------------------------------------------
-# This site needs PHP 8.3 or newer. cPanel normally writes this block itself when you pick a version in
+# This site needs PHP 8.3 or newer; this server offers 8.4 (no 8.3), so 8.4 is used. cPanel normally writes this block itself when you pick a version in
 # MultiPHP Manager; it is kept here so a `git pull` or new upload does not remove it.
 # If your host names its PHP differently, set the version in cPanel → MultiPHP Manager and cPanel will
 # replace these lines.
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php83” package as the default “PHP” programming language.
+# Set the “ea-php84” package as the default “PHP” programming language.
 <IfModule mime_module>
-  AddHandler application/x-httpd-ea-php83___lsphp .php .php8 .phtml
+  AddHandler application/x-httpd-ea-php84___lsphp .php .php8 .phtml
 </IfModule>
 # php -- END cPanel-generated handler, do not edit
