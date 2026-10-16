@@ -23,12 +23,24 @@ Hosting and email details were not yet confirmed when this was written; both com
 
 Never commit `.env`. Enquiries are always saved in the database even if email sending fails (the failure is logged).
 
-## 2. Build once (on your computer or CI)
+## 2. Build on your computer (the server never compiles anything)
 
-```bash
-composer install --no-dev --optimize-autoloader
-npm ci && npm run build          # creates public/build (upload it; Node is not needed on the server)
+The server needs **only PHP 8.3+**. Node/npm are never needed there, and with option A Composer isn't either.
+
+**A. Upload a zip (FTP / cPanel File Manager)**
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\make-release.ps1
 ```
+This compiles CSS/JS, installs production PHP packages in a clean copy and writes `release/itsn-laravel-<date>.zip`
+(app + `vendor/` + `public/build` + admin assets + stock photos). It never includes `.env`, `node_modules`, `public/hot`,
+the local database, logs or tests. Upload and extract the zip, keeping the server's existing `.env` and `storage/app/public` (uploaded photos).
+
+**B. Git repository**
+Compiled files are committed (`public/build`, `public/css|js|fonts/filament` are no longer git-ignored).
+Before every commit that changes `resources/css` or `resources/js`, run `npm run build` locally and commit `public/build` too.
+On the server: `git pull` then `composer install --no-dev --optimize-autoloader` (or use option A if the host has no Composer).
+
+Never upload `public/hot`: it exists only while `npm run dev` runs and makes the site load assets from your computer.
 
 ## 3a. Shared hosting (cPanel)
 
@@ -74,9 +86,8 @@ Trailing slashes are handled by the app (`TrailingSlash` middleware), so no extr
 ## 4. Updating the site later
 
 ```bash
-git pull   # or upload changed files
-composer install --no-dev --optimize-autoloader
-npm ci && npm run build
+git pull   # or upload + extract a new release zip (section 2A)
+composer install --no-dev --optimize-autoloader   # git only; the zip already contains vendor/
 php artisan migrate --force
 php artisan optimize && php artisan filament:optimize
 ```
