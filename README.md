@@ -34,6 +34,8 @@ Tests: `php artisan test` (33 tests: public pages and SEO, redirects, enquiry va
 | Design tokens | `resources/css/app.css` (unchanged from the approved prototype) |
 | Front-end behaviour | `resources/js/itsn.js` (Alpine components) |
 | Admin | `app/Filament/**`, `app/Providers/Filament/AdminPanelProvider.php` |
+| Page text and photos (every page) | `app/Support/PageContent.php` (defaults) + `content()` / `media()` helpers in `app/helpers.php`; edited in Admin → Content → Page content (saved as `page_*` settings) |
+| Stock photos | `storage/app/public/stock/*.webp` (Unsplash, sources in `database/seeders/data/stock-photos.json`) |
 | Settings (contact, offer bar, stats, audiences, analytics) | `settings` table, edited in Admin → Settings → Site settings |
 
 See **`docs/DEPLOYMENT.md`** to go live and **`docs/ADMIN-GUIDE.md`** for staff.

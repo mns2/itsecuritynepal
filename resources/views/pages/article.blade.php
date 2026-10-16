@@ -9,7 +9,7 @@
     'description' => $post->excerptText(), 'datePublished' => $post->published_at?->toAtomString(), 'dateModified' => $post->updated_at?->toAtomString(),
     'author' => ['@type' => 'Organization', 'name' => $post->author], 'publisher' => ['@id' => rtrim(config('app.url'), '/').'/#organization'],
     'mainEntityOfPage' => rtrim(config('app.url'), '/').$post->url(),
-    'image' => $post->featured_image ? asset(\Illuminate\Support\Facades\Storage::url($post->featured_image)) : null,
+    'image' => $post->featured_image ? media($post->featured_image) : null,
 ]), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
 <meta property="article:published_time" content="{{ $post->published_at?->toAtomString() }}">
 @endpush
@@ -32,7 +32,7 @@
     </header>
 
     @if ($post->featured_image)
-        <div class="container-page"><img src="{{ \Illuminate\Support\Facades\Storage::url($post->featured_image) }}" alt="" class="aspect-[21/9] w-full rounded-xl object-cover" width="1216" height="521"></div>
+        <div class="container-page"><img src="{{ media($post->featured_image) }}" alt="" class="aspect-[21/9] w-full rounded-xl object-cover" width="1216" height="521"></div>
     @endif
 
     <div class="container-page grid gap-12 py-12 lg:grid-cols-[1fr_17rem] lg:py-16">

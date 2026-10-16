@@ -96,8 +96,8 @@ class PublicPagesTest extends TestCase
         $this->get('/')->assertSee('<meta name="robots" content="noindex, nofollow">', false);
     }
 
-    public function test_home_shows_individual_and_group_training(): void
+    public function test_home_shows_individual_group_and_corporate_batch_training(): void
     {
-        $this->get('/')->assertSee('Individual training')->assertSee('Group training')->assertDontSee('1,580+');
+        $this->get('/')->assertSee('Individual training')->assertSee('Group training')->assertSee('Corporate batch')->assertSee('value="Corporate Batch"', false)->assertDontSee('1,580+');
     }
 }

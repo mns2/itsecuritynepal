@@ -4,6 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Widgets\EnquiryStats;
 use App\Filament\Widgets\LatestEnquiries;
+use App\Filament\Widgets\LeadsByAudience;
+use App\Filament\Widgets\LeadsChart;
+use App\Filament\Widgets\OngoingClasses;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -13,7 +16,6 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -42,14 +44,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font('Inter')
             ->darkMode(false) // brand rule: no dark theme, admin included
-            ->navigationGroups(['Leads', 'Catalogue', 'Content', 'Settings'])
+            ->navigationGroups(['Leads', 'Training', 'Catalogue', 'Content', 'Settings'])
             ->navigationItems([
                 NavigationItem::make('View website')->url('/', shouldOpenInNewTab: true)->icon('heroicon-o-globe-alt')->group('Settings')->sort(99),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([Dashboard::class])
-            ->widgets([AccountWidget::class, EnquiryStats::class, LatestEnquiries::class])
+            ->widgets([EnquiryStats::class, LeadsChart::class, LeadsByAudience::class, OngoingClasses::class, LatestEnquiries::class])
             ->databaseNotifications(false)
             ->middleware([
                 EncryptCookies::class,

@@ -1,14 +1,14 @@
 @extends('layouts.app')
 @section('title', 'Training Methods: Classroom, Live Online & One-on-One | IT Security Nepal')
-@section('description', 'Learn your way at IT Security Nepal: classroom training in Kathmandu, live virtual training, one-on-one sessions and flip classes, for individuals and groups.')
+@section('description', 'Learn your way at IT Security Nepal: classroom training in Kathmandu, live virtual training, one-on-one sessions and flip classes, for individuals, groups and corporate batches.')
 
 @section('content')
 <section class="bg-grid-light">
     <div class="container-page pt-8 pb-12 lg:pb-16">
         <x-breadcrumbs :items="[['name' => 'Training methods']]" />
         <div class="mt-8 max-w-3xl">
-            <h1 class="text-h1">Flexible ways to learn, with the same expert instructors</h1>
-            <p class="mt-4 text-lead text-ink-muted">Choose the format that fits your schedule. Every option uses the same curriculum, labs and certified instructors, whether you train on your own or as a group.</p>
+            <h1 class="text-h1">{{ content('training_methods.title') }}</h1>
+            <p class="mt-4 text-lead text-ink-muted">{{ content('training_methods.lead') }}</p>
         </div>
     </div>
 </section>
@@ -47,7 +47,7 @@
     </div>
 </section>
 
-<x-cta-band title="Not sure which format suits you?" text="An advisor can suggest the best option for your schedule and goals.">
+<x-cta-band :title="content('training_methods.cta_title')" :text="content('training_methods.cta_text')">
     <button type="button" class="btn btn-primary btn-lg" @click="$dispatch('open-enquiry', {})">Talk to an advisor</button>
     <a href="/batches/" class="btn btn-ghost-light btn-lg">Upcoming batches</a>
 </x-cta-band>

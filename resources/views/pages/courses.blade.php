@@ -9,8 +9,8 @@
         <x-breadcrumbs :items="[['name' => 'Courses']]" />
         <div class="mt-6 grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:items-end">
             <div>
-                <h1 class="text-h1">IT courses &amp; certification training</h1>
-                <p class="mt-4 max-w-2xl text-lead text-ink-muted">{{ $courses->count() }} instructor-led courses across Linux, cybersecurity, networking, cloud and DevOps, with classroom batches in Kathmandu and live online options, for individuals and groups.</p>
+                <h1 class="text-h1">{{ content('listings.courses_title') }}</h1>
+                <p class="mt-4 max-w-2xl text-lead text-ink-muted">{{ $courses->count() }} {{ content('listings.courses_lead') }}</p>
             </div>
             <div role="search">
                 <label for="dir-search" class="field-label">Search courses</label>

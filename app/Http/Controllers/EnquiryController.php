@@ -31,10 +31,10 @@ class EnquiryController extends Controller
             'phone' => ['required', 'string', 'max:30', 'regex:/^\+?[0-9][0-9\s\-]{6,18}$/'],
             'email' => ['required', 'email:rfc', 'max:160'],
             'course' => ['required', 'string', 'max:120'],
-            'audience' => ['nullable', Rule::in(['Individual', 'Group'])],
+            'audience' => ['nullable', Rule::in(Enquiry::AUDIENCES)],
             'size' => ['nullable', 'string', 'max:40'],
             'mode' => ['nullable', Rule::in(Course::MODES)],
-            'org' => ['nullable', 'required_if:form,corporate', 'string', 'max:160'],
+            'org' => ['nullable', 'required_if:form,corporate', 'required_if:audience,Corporate Batch', 'string', 'max:160'],
             'message' => ['nullable', 'string', 'max:2000'],
             'consent' => ['accepted'],
             'source_url' => ['nullable', 'string', 'max:500'],
@@ -47,6 +47,7 @@ class EnquiryController extends Controller
 
         $course = Course::published()->where('slug', $data['course'])->first();
         $isCorporate = $data['form'] === 'corporate';
+        $audience = $isCorporate ? 'Corporate' : ($data['audience'] ?? 'Individual');
 
         $enquiry = Enquiry::create([
             'form' => $data['form'],
@@ -55,10 +56,10 @@ class EnquiryController extends Controller
             'email' => $data['email'],
             'course_id' => $course?->id,
             'interest' => $course ? null : str_replace('area:', '', $data['course']),
-            'audience' => $isCorporate ? 'Corporate' : ($data['audience'] ?? 'Individual'),
-            'group_size' => ($isCorporate || ($data['audience'] ?? null) === 'Group') ? ($data['size'] ?? null) : null,
+            'audience' => $audience,
+            'group_size' => $audience !== 'Individual' ? ($data['size'] ?? null) : null,
             'mode' => $data['mode'] ?? null,
-            'organisation' => $isCorporate ? ($data['org'] ?? null) : null,
+            'organisation' => in_array($audience, ['Corporate', 'Corporate Batch'], true) ? ($data['org'] ?? null) : null,
             'message' => $data['message'] ?? null,
             'consent' => true,
             'source_url' => $data['source_url'] ?? null,

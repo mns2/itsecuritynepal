@@ -12,7 +12,7 @@
         <x-breadcrumbs :items="[['name' => 'Instructors', 'url' => '/instructors/'], ['name' => $instructor->name]]" />
         <div class="mt-8 flex flex-col gap-8 sm:flex-row sm:items-center">
             @if ($instructor->photo)
-                <img src="{{ \Illuminate\Support\Facades\Storage::url($instructor->photo) }}" alt="{{ $instructor->name }}" class="size-32 shrink-0 rounded-full object-cover ring-4 ring-sun-400" width="128" height="128">
+                <img src="{{ media($instructor->photo) }}" alt="{{ $instructor->name }}" class="size-32 shrink-0 rounded-full object-cover ring-4 ring-sun-400" width="128" height="128">
             @endif
             <div>
                 <h1 class="text-h1">{{ $instructor->name }}</h1>

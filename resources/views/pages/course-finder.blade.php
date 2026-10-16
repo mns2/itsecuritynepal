@@ -34,8 +34,8 @@
         <div class="mx-auto mt-8 max-w-3xl" x-data="courseFinder">
             <div class="text-center">
                 <p class="text-eyebrow text-action">Course Finder</p>
-                <h1 class="mt-3 text-h1">Find the right course in 4 questions</h1>
-                <p class="mt-3 text-lead text-ink-muted">Get a personalised recommendation from our catalogue. It takes under a minute.</p>
+                <h1 class="mt-3 text-h1">{{ content('finder.title') }}</h1>
+                <p class="mt-3 text-lead text-ink-muted">{{ content('finder.lead') }}</p>
             </div>
             <div class="mt-10 rounded-xl border border-line bg-white p-5 shadow-card sm:p-8">
                 <div class="flex items-center justify-between text-sm font-semibold">
@@ -75,8 +75,8 @@
                 <div x-show="step === steps" x-cloak class="mt-8" aria-live="polite">
                     <template x-if="loading"><p class="flex items-center justify-center gap-3 py-12 text-ink-muted"><x-icon name="loader-circle" class="size-6 animate-spin" /> Matching courses…</p></template>
                     <div x-show="!loading">
-                        <h2 class="text-h3 outline-none" tabindex="-1" data-step-heading>Your recommended path</h2>
-                        <p class="mt-1 text-ink-muted">Based on your answers, start here and continue in order. Available as <strong x-text="answers.mode"></strong>, for individuals or groups.</p>
+                        <h2 class="text-h3 outline-none" tabindex="-1" data-step-heading>{{ content('finder.result_title') }}</h2>
+                        <p class="mt-1 text-ink-muted">Based on your answers, start here and continue in order. Available as <strong x-text="answers.mode"></strong>, for individuals, groups or as a corporate batch.</p>
                         <ol class="mt-6 grid gap-4">
                             <template x-for="(c, i) in results" :key="c.slug">
                                 <li class="relative flex flex-col gap-4 rounded-lg border-2 p-5 sm:flex-row sm:items-center" :class="i === 0 ? 'border-sun-400 bg-sun-50' : 'border-line'">
@@ -91,7 +91,7 @@
                             </template>
                         </ol>
                         <div class="on-dark mt-8 flex flex-col gap-4 rounded-lg bg-navy-700 p-6 text-white sm:flex-row sm:items-center sm:justify-between">
-                            <div><p class="font-display font-semibold">Talk it through with an advisor</p><p class="text-sm text-navy-100">Confirm the right start, the next batch and fees.</p></div>
+                            <div><p class="font-display font-semibold">{{ content('finder.advisor_title') }}</p><p class="text-sm text-navy-100">{{ content('finder.advisor_text') }}</p></div>
                             <button type="button" class="btn btn-primary shrink-0" @click="$dispatch('open-enquiry', { course: results[0]?.slug })">Contact an advisor</button>
                         </div>
                         <button type="button" class="btn btn-ghost mt-4" @click="restart()"><x-icon name="refresh-ccw" class="size-4" /> Start again</button>

@@ -54,12 +54,12 @@
              x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="translate-y-6 opacity-0" x-transition:enter-end="translate-y-0 opacity-100">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <p class="text-eyebrow text-action">Free course advice</p>
-                    <h2 id="enquiry-dialog-title" class="mt-1 text-h3">Enquire about a course</h2>
+                    <p class="text-eyebrow text-action">{{ content('global.enquiry_dialog.eyebrow') }}</p>
+                    <h2 id="enquiry-dialog-title" class="mt-1 text-h3">{{ content('global.enquiry_dialog.title') }}</h2>
                 </div>
                 <button type="button" class="btn btn-ghost size-11 shrink-0 p-0" @click="open = false" aria-label="Close dialog"><x-icon name="x" class="size-5" /></button>
             </div>
-            <p class="mt-2 mb-6 text-sm text-ink-muted">Tell us what you're interested in. An advisor will call you back, usually the same day.</p>
+            <p class="mt-2 mb-6 text-sm text-ink-muted">{{ content('global.enquiry_dialog.intro') }}</p>
             <x-enquiry-form id="dialog-enquiry" :compact="true" />
         </div>
     </div>

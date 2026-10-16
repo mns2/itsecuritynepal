@@ -3,7 +3,7 @@
 <article class="card card-interactive group relative flex h-full flex-col overflow-hidden" data-category="{{ $post->category }}">
     <div class="relative aspect-[16/9] overflow-hidden bg-media" aria-hidden="true">
         @if ($post->featured_image)
-            <img src="{{ \Illuminate\Support\Facades\Storage::url($post->featured_image) }}" alt="" class="absolute inset-0 size-full object-cover" loading="lazy" width="640" height="360">
+            <img src="{{ media($post->featured_image) }}" alt="" class="absolute inset-0 size-full object-cover" loading="lazy" width="640" height="360">
         @else
             <div class="absolute inset-0 flex flex-col justify-end p-5">
                 <span class="badge badge-on-dark w-fit">{{ $post->category }}</span>

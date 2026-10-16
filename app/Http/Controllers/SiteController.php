@@ -50,7 +50,8 @@ class SiteController extends Controller
     {
         return view('pages.group-training', [
             'popular' => Course::published()->with(['category', 'batches'])
-                ->whereIn('slug', ['linux-bootcamp', 'red-hat-system-administration', 'cisco-certified-network-associate', 'devops-mastery'])->get(),
+                ->whereIn('slug', content('group.popular_courses', []))->get()
+                ->sortBy(fn ($c) => array_search($c->slug, content('group.popular_courses', [])))->values(),
         ]);
     }
 

@@ -52,8 +52,8 @@
                 <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Level</dt><dd class="font-semibold text-navy-700">{{ $course->level }}</dd></div>
                 @if ($course->certification)<div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Certification</dt><dd class="text-right font-semibold text-navy-700">{{ $course->certification }}</dd></div>@endif
                 <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Duration</dt><dd class="text-right font-semibold text-navy-700">{{ $course->duration ?: 'Ask an advisor' }}</dd></div>
-                <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Fees</dt><dd class="text-right font-semibold text-navy-700">Ask an advisor</dd></div>
-                <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Training for</dt><dd class="text-right font-semibold text-navy-700">Individuals &amp; groups</dd></div>
+                <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Fees</dt><dd class="text-right font-semibold text-navy-700">{{ content('course_page.fees_text') }}</dd></div>
+                <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Training for</dt><dd class="text-right font-semibold text-navy-700">Individuals, groups &amp; companies</dd></div>
                 <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-muted">Next batch</dt><dd @class(['text-right font-semibold', 'text-success-600' => $next, 'text-navy-700' => ! $next])>{{ $next ? ($next->starts_on?->format('j M Y') ?? $next->start_label) : 'Contact us' }}</dd></div>
             </dl>
             <div class="mt-5 grid gap-2">
@@ -65,7 +65,7 @@
                     @endif
                 </div>
             </div>
-            <p class="mt-4 flex items-center gap-2 text-xs text-ink-muted"><x-icon name="shield-check" class="size-4 text-success-600" /> Free counselling · no obligation</p>
+            <p class="mt-4 flex items-center gap-2 text-xs text-ink-muted"><x-icon name="shield-check" class="size-4 text-success-600" /> {{ content('course_page.panel_note') }}</p>
         </div>
     </aside>
 
@@ -129,9 +129,9 @@
 
         <section class="pt-14" aria-labelledby="h-labs">
             <div class="rounded-xl bg-surface p-6 sm:p-8">
-                <h2 id="h-labs" class="text-h3">How you'll learn</h2>
+                <h2 id="h-labs" class="text-h3">{{ content('course_page.learn_title') }}</h2>
                 <ul class="mt-5 grid gap-5 sm:grid-cols-3">
-                    @foreach ([['terminal', 'Hands-on labs', 'Around 80% of class time is practical work on real systems.'], ['flask-conical', 'Real-world scenarios', 'Case studies and troubleshooting tasks modelled on real jobs.'], ['badge-check', 'Exam preparation', 'Exam-style tasks and guidance'.($course->certification ? ' for '.$course->certification : '').'.']] as [$ic, $t, $d])
+                    @foreach (collect(content('course_page.learn_items', []))->map(fn ($i) => [$i['icon'] ?: 'check', $i['title'], $i['text']]) as [$ic, $t, $d])
                         <li><span class="flex size-10 items-center justify-center rounded-md bg-navy-700 text-sun-300"><x-icon :name="$ic" class="size-5" /></span><p class="mt-3 font-semibold text-navy-700">{{ $t }}</p><p class="mt-1 text-sm text-ink-muted">{{ $d }}</p></li>
                     @endforeach
                 </ul>
@@ -150,9 +150,10 @@
 
         <section class="pt-14" aria-labelledby="h-modes">
             <h2 id="h-modes" class="text-h2">Training options</h2>
-            <ul class="mt-6 grid gap-4 sm:grid-cols-3">
+            <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <li class="card card-interactive group relative p-5"><span class="text-action"><x-icon name="user-round" class="size-6" /></span><h3 class="mt-3 font-semibold"><a href="/course/" class="stretched-link text-navy-700 no-underline">Individual</a></h3><p class="mt-1 text-sm text-ink-muted">Join a public batch: classroom, live online or one-on-one.</p></li>
                 <li class="card card-interactive group relative p-5"><span class="text-action"><x-icon name="users" class="size-6" /></span><h3 class="mt-3 font-semibold"><a href="/group-training/" class="stretched-link text-navy-700 no-underline">Group</a></h3><p class="mt-1 text-sm text-ink-muted">Private batch for your friends, classmates or team.</p></li>
+                <li class="card card-interactive group relative p-5"><span class="text-action"><x-icon name="building-2" class="size-6" /></span><h3 class="mt-3 font-semibold"><a href="/corporate-training/" class="stretched-link text-navy-700 no-underline">Corporate batch</a></h3><p class="mt-1 text-sm text-ink-muted">Private batch for your organisation's staff.</p></li>
                 <li class="card card-interactive group relative p-5"><span class="text-action"><x-icon name="route" class="size-6" /></span><h3 class="mt-3 font-semibold"><a href="/mode-of-training/" class="stretched-link text-navy-700 no-underline">Training methods</a></h3><p class="mt-1 text-sm text-ink-muted">Classroom, live virtual, one-on-one and flip class.</p></li>
             </ul>
         </section>
@@ -173,7 +174,7 @@
                 </ul>
             @else
                 <div class="mt-6 flex flex-col gap-4 rounded-lg border border-dashed border-line-strong bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
-                    <div class="flex gap-4"><x-icon name="calendar-days" class="size-6 shrink-0 text-action" /><div><p class="font-semibold text-navy-700">No batch scheduled yet</p><p class="text-sm text-ink-muted">Leave your details and we'll tell you when the next batch opens, or ask about a private group batch.</p></div></div>
+                    <div class="flex gap-4"><x-icon name="calendar-days" class="size-6 shrink-0 text-action" /><div><p class="font-semibold text-navy-700">{{ content('course_page.no_batch_title') }}</p><p class="text-sm text-ink-muted">{{ content('course_page.no_batch_text') }}</p></div></div>
                     <button type="button" class="btn btn-outline btn-sm shrink-0" @click="$dispatch('open-enquiry', { course: '{{ $course->slug }}' })">Notify me</button>
                 </div>
             @endif

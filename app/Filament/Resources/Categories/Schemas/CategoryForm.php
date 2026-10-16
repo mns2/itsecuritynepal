@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Models\LearningPath;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -25,6 +26,8 @@ class CategoryForm
                     TextInput::make('key')->required()->unique(ignoreRecord: true)->helperText('Internal id used by filters; never change.'),
                     TextInput::make('icon')->required()->default('layers')->helperText('Lucide icon name, e.g. server, cloud, shield-check'),
                 ]),
+                FileUpload::make('image')->label('Track photo')->image()->disk('public')->directory('tracks')->imageEditor()->maxSize(4096)
+                    ->helperText('Used on course cards in this track (unless a course has its own photo). Landscape, at least 1000 px wide.'),
                 TextInput::make('tagline')->maxLength(160),
                 Textarea::make('intro')->rows(3),
                 Repeater::make('objectives')->label("What you'll learn")->simple(TextInput::make('text')->required())->reorderable(),

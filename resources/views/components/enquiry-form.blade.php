@@ -21,14 +21,14 @@
     @if ($sessionStatus === 'sent' && $sessionForm === $id)
         <div class="rounded-lg border border-success-600/30 bg-success-50 p-5" role="status">
             <p class="flex items-center gap-2 font-semibold text-success-600"><x-icon name="circle-check" class="size-5" /> Thank you! Your enquiry is in.</p>
-            <p class="mt-1 text-sm text-ink-muted">An advisor will contact you within one working day.</p>
+            <p class="mt-1 text-sm text-ink-muted">{{ content('global.enquiry_success') }}</p>
         </div>
     @endif
 
     <template x-if="state === 'success'">
         <div class="rounded-lg border border-success-600/30 bg-success-50 p-5" role="status" tabindex="-1" x-init="$el.focus()">
             <p class="flex items-center gap-2 font-semibold text-success-600"><x-icon name="circle-check" class="size-5" /><span x-text="'Thank you, ' + form.name.split(' ')[0] + '! Your enquiry is in.'">Thank you! Your enquiry is in.</span></p>
-            <p class="mt-1 text-sm text-ink-muted">An advisor will contact you within one working day.</p>
+            <p class="mt-1 text-sm text-ink-muted">{{ content('global.enquiry_success') }}</p>
             <button type="button" class="btn btn-ghost btn-sm mt-3 -ml-3" @click="reset()">Send another enquiry</button>
         </div>
     </template>
@@ -66,13 +66,19 @@
                 <fieldset class="{{ $span }}">
                     <legend class="field-label">Training for</legend>
                     <div class="flex flex-wrap gap-2">
-                        @foreach ([['Individual', 'user-round'], ['Group', 'users']] as [$a, $ic])
+                        @foreach ([['Individual', 'user-round'], ['Group', 'users'], ['Corporate Batch', 'building-2']] as [$a, $ic])
                             <label class="chip"><input type="radio" class="sr-only" name="audience" value="{{ $a }}" x-model="form.audience" @checked($audience === $a)><x-icon :name="$ic" class="size-4" />{{ $a }}</label>
                         @endforeach
                     </div>
                 </fieldset>
-                <div class="{{ $span }}" x-show="form.audience === 'Group'" @if ($audience !== 'Group') x-cloak @endif>
-                    <label for="{{ $id }}-gsize" class="field-label">Group size</label>
+                <div class="{{ $span }}" x-show="form.audience === 'Corporate Batch'" @if ($audience !== 'Corporate Batch') x-cloak @endif>
+                    <label for="{{ $id }}-borg" class="field-label">Organisation</label>
+                    <input id="{{ $id }}-borg" name="org" class="input" type="text" autocomplete="organization" value="{{ old('org') }}" maxlength="160"
+                           x-model.trim="form.org" @blur="validate('org')" :aria-invalid="!!errors.org" aria-describedby="{{ $id }}-borg-err" :disabled="form.audience !== 'Corporate Batch'">
+                    <p id="{{ $id }}-borg-err" class="field-error" x-show="errors.org" x-cloak><x-icon name="circle-alert" class="size-4" /><span x-text="errors.org"></span></p>
+                </div>
+                <div class="{{ $span }}" x-show="form.audience !== 'Individual'" @if ($audience === 'Individual') x-cloak @endif>
+                    <label for="{{ $id }}-gsize" class="field-label" x-text="form.audience === 'Corporate Batch' ? 'Number of staff' : 'Group size'">Group size</label>
                     <select id="{{ $id }}-gsize" name="size" class="input" x-model="form.size">
                         @foreach (['2–5 people', '6–10 people', '11–20 people', '20+ people'] as $s)<option>{{ $s }}</option>@endforeach
                     </select>

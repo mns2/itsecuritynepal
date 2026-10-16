@@ -9,7 +9,12 @@
 <article class="card card-interactive group relative flex h-full flex-col overflow-hidden"
     data-course data-category="{{ $c->category->key }}" data-level="{{ $c->level }}" data-modes="{{ implode('|', $modes) }}"
     data-search="{{ \Illuminate\Support\Str::lower($c->code.' '.$c->name.' '.$c->certification.' '.$c->category->name) }}" data-featured="{{ $c->featured ? 'true' : 'false' }}">
-    <div class="relative grid aspect-[16/9] place-items-center bg-media text-white" aria-hidden="true">
+    @php($photo = media($c->image ?: $c->category->image))
+    <div class="relative grid aspect-[16/9] place-items-center overflow-hidden bg-media text-white" aria-hidden="true">
+        @if ($photo)
+            <img src="{{ $photo }}" alt="" class="absolute inset-0 size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" loading="lazy" width="640" height="360">
+            <span class="absolute inset-0 bg-gradient-to-t from-navy-900/85 via-navy-900/45 to-navy-900/25"></span>
+        @endif
         <span class="badge absolute top-2.5 left-2.5 bg-sun-100 text-sun-700">{{ $c->category->short_name }}</span>
         @if ($batch && ! $batch->is_illustrative)
             <span class="badge absolute top-2.5 right-2.5 bg-white text-success-600"><x-icon name="calendar-days" class="size-3" />{{ $batch->start_label }}</span>

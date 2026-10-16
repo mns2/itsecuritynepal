@@ -7,8 +7,8 @@
     <div class="container-page pt-8 pb-12 lg:pb-16">
         <x-breadcrumbs :items="[['name' => 'About', 'url' => '/about/'], ['name' => 'Instructors']]" />
         <div class="mt-8 max-w-3xl">
-            <h1 class="text-h1">Learn from certified practitioners</h1>
-            <p class="mt-4 text-lead text-ink-muted">Our instructors hold the certifications they teach and bring real industry experience into every lab session.</p>
+            <h1 class="text-h1">{{ content('listings.instructors_title') }}</h1>
+            <p class="mt-4 text-lead text-ink-muted">{{ content('listings.instructors_lead') }}</p>
         </div>
     </div>
 </section>
@@ -29,7 +29,7 @@
                         <article class="card card-interactive group relative flex h-full flex-col p-6">
                             <div class="flex items-center gap-4">
                                 @if ($i->photo)
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($i->photo) }}" alt="{{ $i->name }}" class="size-16 shrink-0 rounded-full object-cover" width="64" height="64" loading="lazy">
+                                    <img src="{{ media($i->photo) }}" alt="{{ $i->name }}" class="size-16 shrink-0 rounded-full object-cover" width="64" height="64" loading="lazy">
                                 @else
                                     <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-surface font-display text-lg font-bold text-action">{{ collect(explode(' ', $i->name))->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->join('') }}</span>
                                 @endif

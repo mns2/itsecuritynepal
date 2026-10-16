@@ -14,8 +14,8 @@
 <section class="bg-grid-light">
     <div class="container-page pt-8 pb-12">
         <x-breadcrumbs :items="[['name' => 'FAQ']]" />
-        <h1 class="mt-8 text-h1">Frequently asked questions</h1>
-        <p class="mt-4 max-w-2xl text-lead text-ink-muted">Can't find an answer? <a href="/contact/">Contact us</a> and an advisor will help.</p>
+        <h1 class="mt-8 text-h1">{{ content('listings.faq_title') }}</h1>
+        <p class="mt-4 max-w-2xl text-lead text-ink-muted">{{ content('listings.faq_lead') }} <a href="/contact/">Contact us</a></p>
     </div>
 </section>
 

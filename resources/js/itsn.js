@@ -56,10 +56,10 @@ document.addEventListener('alpine:init', () => {
       email: (v) => (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? 'Enter a valid email address, e.g. name@example.com.' : ''),
       course: (v) => (!v ? (corporate ? 'Choose a training area.' : 'Choose a course, or "Not sure yet".') : ''),
       consent: (v) => (!v ? 'Please agree so we can contact you.' : ''),
-      org: (v) => (corporate && v.length < 2 ? 'Enter your organisation name.' : ''),
+      org: (v, f) => ((corporate || f.audience === 'Corporate Batch') && v.length < 2 ? 'Enter your organisation name.' : ''),
     },
     validate(field) {
-      const msg = this.rules[field](this.form[field]);
+      const msg = this.rules[field](this.form[field], this.form);
       if (msg) this.errors[field] = msg; else delete this.errors[field];
       this.errors = { ...this.errors };
     },

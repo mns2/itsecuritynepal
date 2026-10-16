@@ -26,13 +26,13 @@ class EnquiriesTable
                 TextColumn::make('email')->searchable()->toggleable(),
                 TextColumn::make('course.name')->label('Course')->placeholder(fn ($record) => $record->interest ? ucfirst($record->interest) : '—')->wrap(),
                 TextColumn::make('audience')->badge()->color(fn ($state) => match ($state) {
-                    'Group' => 'warning', 'Corporate' => 'info', default => 'gray'
+                    'Group' => 'warning', 'Corporate', 'Corporate Batch' => 'info', default => 'gray'
                 }),
                 SelectColumn::make('status')->options(Enquiry::STATUSES),
             ])
             ->filters([
                 SelectFilter::make('status')->options(Enquiry::STATUSES)->default('new'),
-                SelectFilter::make('audience')->options(['Individual' => 'Individual', 'Group' => 'Group', 'Corporate' => 'Corporate']),
+                SelectFilter::make('audience')->options(['Individual' => 'Individual', 'Group' => 'Group', 'Corporate Batch' => 'Corporate Batch', 'Corporate' => 'Corporate (corporate page form)']),
                 SelectFilter::make('form')->options(Enquiry::FORMS),
             ])
             ->recordActions([EditAction::make()->label('Open')])

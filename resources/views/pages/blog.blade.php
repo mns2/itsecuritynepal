@@ -6,8 +6,8 @@
 <section class="bg-grid-light">
     <div class="container-page pt-8 pb-12">
         <x-breadcrumbs :items="[['name' => 'Blog']]" />
-        <h1 class="mt-8 text-h1">Learning resources &amp; career guides</h1>
-        <p class="mt-4 max-w-2xl text-lead text-ink-muted">Practical advice on certifications, career paths and getting started in IT, from the team at IT Security Nepal.</p>
+        <h1 class="mt-8 text-h1">{{ content('listings.blog_title') }}</h1>
+        <p class="mt-4 max-w-2xl text-lead text-ink-muted">{{ content('listings.blog_lead') }}</p>
     </div>
 </section>
 

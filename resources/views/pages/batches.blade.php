@@ -7,8 +7,8 @@
     <div class="container-page pt-8 pb-12">
         <x-breadcrumbs :items="[['name' => 'Upcoming batches']]" />
         <div class="mt-8 max-w-2xl">
-            <h1 class="text-h1">Upcoming batches</h1>
-            <p class="mt-4 text-lead text-ink-muted">Seats are limited so everyone gets real lab time. Reserve a seat, ask us to notify you when a new batch opens, or request a private batch for your group.</p>
+            <h1 class="text-h1">{{ content('listings.batches_title') }}</h1>
+            <p class="mt-4 text-lead text-ink-muted">{{ content('listings.batches_lead') }}</p>
         </div>
     </div>
 </section>

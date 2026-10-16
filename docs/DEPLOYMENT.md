@@ -81,7 +81,8 @@ php artisan migrate --force
 php artisan optimize && php artisan filament:optimize
 ```
 
-Content changes (courses, batches, blog, settings) are made in `/admin` and need no deployment.
+Content changes (courses, batches, blog, page text, photos, settings) are made in `/admin` and need no deployment.
+Uploaded photos live in `storage/app/public` (served through `public/storage`; run `php artisan storage:link` once per server). Back that folder up together with the database.
 **Do not re-run `db:seed` on production after launch:** it re-imports the original content and would overwrite edits made in the admin panel.
 
 ## 5. Launch checklist
@@ -92,7 +93,8 @@ Content changes (courses, batches, blog, settings) are made in `/admin` and need
 - [ ] Batches: replace sample rows (marked "Sample data") with real dates or unpublish them.
 - [ ] Course levels, certifications and durations reviewed (Admin → Courses).
 - [ ] Enter the Privacy Policy and Terms text (Admin → Legal pages). They are `noindex` until text exists.
-- [ ] Add real photos: blog featured images (Admin → Blog posts); homepage and About photo slots are marked in `resources/views/pages/home.blade.php` / `about.blade.php`.
+- [ ] Photos: the site ships with free Unsplash stock photos (`storage/app/public/stock/`, licence and sources in `database/seeders/data/stock-photos.json`; free for commercial use, no attribution required). Replace with real photos where possible: Admin → Page content (homepage, About, Group, Corporate), Tracks, Courses, Blog posts.
+- [ ] Copy `storage/app/public/stock/` to the server and run `php artisan storage:link`.
 - [ ] Add instructor profiles (Admin → Instructors) and genuine testimonials with consent, or leave them empty (the site shows honest fallbacks).
 - [ ] Send a test enquiry and confirm the email arrives at `ENQUIRY_NOTIFY_EMAIL`.
 - [ ] `APP_ENV=production`, `APP_DEBUG=false`, HTTPS forced, `SESSION_SECURE_COOKIE=true`.

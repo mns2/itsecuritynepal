@@ -7,8 +7,8 @@
 <section class="bg-grid-light">
     <div class="container-page pt-8 pb-12">
         <x-breadcrumbs :items="[['name' => 'Contact']]" />
-        <h1 class="mt-8 text-h1">Contact us</h1>
-        <p class="mt-4 max-w-2xl text-lead text-ink-muted">Questions about a course, batch dates or fees, for yourself or a group? Call, message or visit us. Advisors usually reply the same working day.</p>
+        <h1 class="mt-8 text-h1">{{ content('listings.contact_title') }}</h1>
+        <p class="mt-4 max-w-2xl text-lead text-ink-muted">{{ content('listings.contact_lead') }}</p>
     </div>
 </section>
 

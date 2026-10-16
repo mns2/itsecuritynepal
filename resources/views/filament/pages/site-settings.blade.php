@@ -2,7 +2,7 @@
     <form wire:submit="save" class="grid gap-6">
         {{ $this->form }}
         <div>
-            <x-filament::button type="submit">Save settings</x-filament::button>
+            <x-filament::button type="submit">Save changes</x-filament::button>
         </div>
     </form>
 </x-filament-panels::page>

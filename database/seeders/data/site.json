@@ -649,8 +649,8 @@
       "url": "/group-training/",
       "icon": "users",
       "title": "Group training",
-      "short": "Train together as friends, classmates, a team or an organisation.",
-      "body": "Bring a group of friends, classmates or colleagues, or a whole team from your organisation, and train together in a private batch with a schedule that suits everyone.",
+      "short": "Train together as friends, classmates or a small team.",
+      "body": "Bring a group of friends, classmates or colleagues and train together in a private batch with a schedule that suits everyone.",
       "points": [
         "Private batch for your group or team",
         "Schedule agreed with the group",
@@ -658,6 +658,22 @@
       ],
       "cta": "Plan group training",
       "verify": "Confirm group size limits and any group pricing before launch."
+    },
+    {
+      "id": "corporate",
+      "name": "Corporate Batch",
+      "url": "/corporate-training/",
+      "icon": "building-2",
+      "title": "Corporate batch",
+      "short": "A private batch for your organisation's staff.",
+      "body": "A dedicated batch for your company's staff, with focus areas agreed with your organisation and training at our centre, on-site or live online.",
+      "points": [
+        "Private batch for your organisation",
+        "Focus areas agreed with your team",
+        "Classroom at our centre, on-site or live online"
+      ],
+      "cta": "Plan corporate training",
+      "verify": "Confirm corporate batch sizes and any pricing before launch."
     }
   ]
 }

@@ -3,15 +3,7 @@
     $contact = $site['contact'] ?? [];
     $audiences = $site['audiences'] ?? [];
     $current = '/'.ltrim(rtrim(request()->path(), '/').'/', '/');
-    $nav = [
-        ['name' => 'Upcoming Batches', 'url' => '/batches/', 'icon' => 'calendar-days'],
-        ['name' => 'Red Hat', 'url' => '/redhat/', 'icon' => 'terminal'],
-        ['name' => 'Bootcamp', 'url' => '/bootcamp/', 'icon' => 'laptop', 'tag' => 'New'],
-        ['name' => 'How We Train', 'url' => '/mode-of-training/', 'icon' => 'route'],
-        ['name' => 'About', 'url' => '/about/', 'icon' => 'award'],
-        ['name' => 'Blog', 'url' => '/blog/', 'icon' => 'book-open-check'],
-        ['name' => 'Contact', 'url' => '/contact/', 'icon' => 'phone'],
-    ];
+    $nav = collect(content('global.header_nav', []))->map(fn ($n) => ['name' => $n['label'] ?? '', 'url' => $n['url'] ?? '#', 'icon' => $n['icon'] ?: 'circle', 'tag' => $n['tag'] ?? null])->all();
 @endphp
 <header x-data="siteHeader" class="sticky top-0 z-50 bg-white transition-shadow" :class="scrolled && 'shadow-[0_6px_20px_-12px_rgb(0_50_117/0.35)]'" @keydown.escape="closeAll()">
     <div class="container-page relative flex h-[4.5rem] items-center gap-3">
@@ -45,7 +37,7 @@
                         </li>
                     </ul>
                     <div class="mt-2 flex items-center justify-between border-t border-line pt-3.5 text-[0.84375rem] text-ink-muted">
-                        <span>Training for individuals and groups</span>
+                        <span>Training for individuals, groups and companies</span>
                         <a href="/course/" class="link-arrow">Browse all {{ $courseCount }} courses <x-icon name="arrow-right" class="size-4" /></a>
                     </div>
                 </div>
@@ -64,7 +56,7 @@
                 <span><span class="block text-[0.6875rem] text-ink-muted">Call an advisor</span><span class="block font-display text-sm font-bold text-navy-700">{{ $contact['phonePrimary']['label'] }}</span></span>
             </a>
         @endif
-        <button type="button" class="btn btn-primary hidden whitespace-nowrap sm:inline-flex" @click="$dispatch('open-enquiry', {})">Send Inquiry <x-icon name="arrow-right" class="size-[18px]" /></button>
+        <button type="button" class="btn btn-primary hidden whitespace-nowrap sm:inline-flex" @click="$dispatch('open-enquiry', {})">{{ content('global.header_button') }} <x-icon name="arrow-right" class="size-[18px]" /></button>
 
         <a href="tel:{{ $contact['phonePrimary']['tel'] ?? '' }}" class="grid size-11 place-items-center rounded-md border-[1.5px] border-line text-navy-700 hover:border-action hover:text-action sm:hidden" aria-label="Call {{ $contact['phonePrimary']['label'] ?? '' }}"><x-icon name="phone" class="size-5" /></a>
         <button type="button" class="grid size-11 place-items-center rounded-md border-[1.5px] border-line text-navy-700 hover:border-action hover:text-action lg:hidden" @click="$dispatch('open-search')" aria-label="Search courses"><x-icon name="search" class="size-5" /></button>
@@ -77,7 +69,7 @@
                 <ul class="flex items-center gap-5 xl:gap-6">
                     @foreach ($nav as $item)
                         <li><a href="{{ $item['url'] }}" @class(['inline-flex items-center gap-1.5 font-medium whitespace-nowrap no-underline hover:text-action', 'text-action' => $current === $item['url'], 'text-ink' => $current !== $item['url']]) @if ($current === $item['url']) aria-current="page" @endif>
-                            <span class="text-action"><x-icon :name="$item['icon']" class="size-[15px]" /></span>{{ $item['name'] }}@isset($item['tag'])<span class="rounded-full bg-sun-400 px-1.5 py-0.5 text-[0.65625rem] leading-none font-bold text-navy-700">{{ $item['tag'] }}</span>@endisset
+                            <span class="text-action"><x-icon :name="$item['icon']" class="size-[15px]" /></span>{{ $item['name'] }}@if (! empty($item['tag']))<span class="rounded-full bg-sun-400 px-1.5 py-0.5 text-[0.65625rem] leading-none font-bold text-navy-700">{{ $item['tag'] }}</span>@endif
                         </a></li>
                     @endforeach
                 </ul>
@@ -91,8 +83,8 @@
     <nav aria-label="Quick links" class="border-y border-line lg:hidden">
         <ul class="no-scrollbar container-page flex gap-2 overflow-x-auto py-2 text-[0.8125rem] font-semibold">
             <li><button type="button" class="flex h-8 items-center gap-1.5 rounded-full bg-navy-700 px-3 whitespace-nowrap text-white" @click="mobile = true"><x-icon name="layers" class="size-3.5" />All Courses</button></li>
-            @foreach ([['Upcoming', '/batches/'], ['Bootcamp', '/bootcamp/'], ['Red Hat', '/redhat/'], ['Group training', '/group-training/'], ['Course Finder', '/course-finder/']] as [$label, $url])
-                <li><a href="{{ $url }}" class="flex h-8 items-center rounded-full border-[1.5px] border-line px-3 whitespace-nowrap text-navy-700 no-underline">{{ $label }}</a></li>
+            @foreach (content('global.mobile_quick_links', []) as $q)
+                <li><a href="{{ $q['url'] }}" class="flex h-8 items-center rounded-full border-[1.5px] border-line px-3 whitespace-nowrap text-navy-700 no-underline">{{ $q['label'] }}</a></li>
             @endforeach
         </ul>
     </nav>

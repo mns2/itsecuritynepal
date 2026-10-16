@@ -66,6 +66,7 @@ class ContentImportSeeder extends Seeder
                 'name' => $c['name'],
                 'short_name' => $c['short'],
                 'icon' => $c['icon'],
+                'image' => $this->stock('track-'.$c['id']),
                 'tagline' => $c['tagline'],
                 'intro' => $c['intro'],
                 'objectives' => $c['objectives'],
@@ -192,6 +193,7 @@ class ContentImportSeeder extends Seeder
                 'title' => $p['title'],
                 'category' => $this->site['postCategories'][$p['slug']] ?? 'News',
                 'excerpt' => $p['excerpt'],
+                'featured_image' => $this->stock('post-'.$p['slug']),
                 'body' => $p['body'],
                 'related_course_ids' => collect($this->site['postCourses'][$p['slug']] ?? [])
                     ->map(fn ($s) => $courseIds[$s] ?? null)->filter()->values()->all(),
@@ -206,6 +208,14 @@ class ContentImportSeeder extends Seeder
         foreach ($this->site['legal'] as $l) {
             Page::firstOrCreate(['slug' => $l['slug']], ['title' => $l['title'], 'body' => null]);
         }
+    }
+
+    /** Path of a bundled stock photo on the public disk (see data/stock-photos.json), or null if missing. */
+    private function stock(string $name): ?string
+    {
+        $path = "stock/{$name}.webp";
+
+        return is_file(storage_path("app/public/{$path}")) ? $path : null;
     }
 
     /** Old live-site URLs that were broken, duplicated or are being retired (see scrape README §8). */

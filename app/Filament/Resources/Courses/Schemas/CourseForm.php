@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Courses\Schemas;
 
 use App\Models\Course;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
@@ -36,6 +37,8 @@ class CourseForm
                         CheckboxList::make('modes')->options(array_combine(Course::MODES, Course::MODES))->columns(3)->default(Course::MODES),
                     ]),
                     Textarea::make('summary')->rows(3)->maxLength(400)->helperText('Shown on course cards and as the page intro.'),
+                    FileUpload::make('image')->label('Card photo (optional)')->image()->disk('public')->directory('courses')->imageEditor()->maxSize(4096)
+                        ->helperText('Shown on course cards. If empty, the track photo is used.'),
                     Grid::make(3)->schema([
                         Toggle::make('is_published')->label('Published')->default(true),
                         Toggle::make('featured')->label('Featured on homepage'),

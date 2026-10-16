@@ -58,6 +58,14 @@ class EnquiryTest extends TestCase
         $this->assertSame(['Group', '6–10 people'], [Enquiry::sole()->audience, Enquiry::sole()->group_size]);
     }
 
+    public function test_corporate_batch_enquiry_requires_organisation(): void
+    {
+        $this->postJson('/enquiries', $this->payload(['audience' => 'Corporate Batch']))->assertStatus(422)->assertJsonValidationErrors('org');
+        $this->postJson('/enquiries', $this->payload(['audience' => 'Corporate Batch', 'org' => 'Example Ltd', 'size' => '11–20 people']))->assertOk();
+        $e = Enquiry::sole();
+        $this->assertSame(['Corporate Batch', 'Example Ltd', '11–20 people'], [$e->audience, $e->organisation, $e->group_size]);
+    }
+
     public function test_not_sure_enquiry_has_no_course_but_keeps_interest(): void
     {
         $this->postJson('/enquiries', $this->payload(['course' => 'not-sure']))->assertOk();
