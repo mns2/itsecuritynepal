@@ -1,3 +1,6 @@
 *
 !.gitignore
 !.htaccess
+# Stock photos ship with the site (used by the seeded content); everything else here is uploaded on the server.
+!stock/
+!stock/*.webp
