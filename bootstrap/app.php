@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\GuardPublicHost;
 use App\Http\Middleware\TrailingSlash;
 use App\Models\Redirect;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->prepend(TrailingSlash::class);
+        $middleware->prepend(GuardPublicHost::class); // runs first, on every route incl. /admin
+        // Mail apps' one-click unsubscribe (RFC 8058) posts without a CSRF token; the long random token protects it.
+        $middleware->preventRequestForgery(except: ['newsletter/unsubscribe/*']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

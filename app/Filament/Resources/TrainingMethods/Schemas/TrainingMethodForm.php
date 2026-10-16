@@ -30,6 +30,7 @@ class TrainingMethodForm
                     Toggle::make('is_published')->default(true)->inline(false),
                 ]),
             ]),
+            \App\Filament\Schemas\SeoFields::relationshipSection(),
         ]);
     }
 }

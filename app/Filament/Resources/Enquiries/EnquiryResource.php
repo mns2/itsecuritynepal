@@ -15,6 +15,10 @@ use Filament\Tables\Table;
 
 class EnquiryResource extends Resource
 {
+    use \App\Filament\Concerns\RestrictedToArea;
+
+    protected static string $accessArea = 'leads';
+
     protected static ?string $model = Enquiry::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInboxArrowDown;
@@ -37,10 +41,6 @@ class EnquiryResource extends Resource
         return EnquiriesTable::configure($table);
     }
 
-    public static function canCreate(): bool
-    {
-        return false; // enquiries only come from the website
-    }
 
     public static function getNavigationBadge(): ?string
     {
@@ -60,6 +60,7 @@ class EnquiryResource extends Resource
     {
         return [
             'index' => ListEnquiries::route('/'),
+            'create' => \App\Filament\Resources\Enquiries\Pages\CreateEnquiry::route('/create'),
             'edit' => EditEnquiry::route('/{record}/edit'),
         ];
     }

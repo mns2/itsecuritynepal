@@ -10,6 +10,11 @@ use Filament\Widgets\TableWidget;
 
 class LatestEnquiries extends TableWidget
 {
+    public static function canView(): bool
+    {
+        return \App\Support\Access::allows('leads');
+    }
+
     protected static ?int $sort = 5;
 
     protected static bool $isLazy = false;

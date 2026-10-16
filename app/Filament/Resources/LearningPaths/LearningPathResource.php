@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class LearningPathResource extends Resource
 {
+    use \App\Filament\Concerns\RestrictedToArea;
+
+    protected static string $accessArea = 'catalogue';
+
     protected static ?string $model = LearningPath::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
@@ -24,7 +28,7 @@ class LearningPathResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationLabel = 'Learning paths';
+    protected static ?string $navigationLabel = 'Career pathways';
 
     protected static ?string $recordTitleAttribute = 'name';
 

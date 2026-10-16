@@ -14,4 +14,9 @@ class EditStudent extends EditRecord
     {
         return [DeleteAction::make()];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return \App\Filament\Resources\Students\Schemas\FeeFields::stampConfirmation($data, $this->record);
+    }
 }

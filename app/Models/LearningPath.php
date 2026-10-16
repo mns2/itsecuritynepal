@@ -7,9 +7,16 @@ use Illuminate\Support\Collection;
 
 class LearningPath extends Model
 {
+    use \App\Models\Concerns\HasSeo;
+
     protected $guarded = ['id'];
 
-    protected $casts = ['steps' => 'array', 'is_published' => 'boolean'];
+    protected $casts = ['steps' => 'array', 'skills' => 'array', 'job_titles' => 'array', 'is_published' => 'boolean'];
+
+    public function url(): string
+    {
+        return '/career-pathways/'.$this->slug.'/';
+    }
 
     /** Steps with Course models resolved; unpublished or missing courses are skipped. */
     public function resolvedSteps(): Collection

@@ -29,6 +29,11 @@ use UnitEnum;
  */
 class PageContentEditor extends Page
 {
+    public static function canAccess(): bool
+    {
+        return \App\Support\Access::allows('content');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;
 
     protected static string|UnitEnum|null $navigationGroup = 'Content';
@@ -48,6 +53,17 @@ class PageContentEditor extends Page
     private const LONG_KEYS = ['text', 'intro', 'lead', 'body', 'answer', 'description', 'paragraphs', 'footer_text', 'partner_text', 'reviews_text', 'sector_intro', 'plan_intro', 'proposal_intro', 'cta_text'];
 
     private ?array $courseOptions = null;
+
+    /** Recommended upload size per photo slot (shown next to the field). Photos are cropped to fit, so keep faces and text centred. */
+    private const IMAGE_SIZES = [
+        'main_image' => '1600 × 1200 px (4:3)',
+        'second_image' => '1200 × 900 px (4:3)',
+        'third_image' => '1200 × 900 px (4:3)',
+        'individual_image' => '1600 × 700 px (16:7, wide)',
+        'group_image' => '1600 × 700 px (16:7, wide)',
+        'corporate_image' => '1600 × 700 px (16:7, wide)',
+        'image' => '1600 × 1200 px (4:3)',
+    ];
 
     public function mount(): void
     {
@@ -81,7 +97,8 @@ class PageContentEditor extends Page
             } elseif (in_array($key, ['course', 'main_course'], true)) {
                 $fields[] = Select::make($key)->label($label === 'Main Course' ? 'Main course' : 'Course')->searchable()->options(fn () => $this->courses());
             } elseif (is_string($value) && str_ends_with($key, 'image')) {
-                $fields[] = FileUpload::make($key)->label($label)->image()->disk('public')->directory('content')
+                $fields[] = FileUpload::make($key)->label($label)->hintIcon('heroicon-m-photo')->hint(self::IMAGE_SIZES[$key] ?? '1600 × 1200 px (4:3)')
+                    ->image()->disk('public')->directory('content')
                     ->imageEditor()->maxSize(4096)->helperText('JPG/PNG/WebP up to 4 MB. Landscape photos work best.');
             } elseif (is_string($value)) {
                 $long = mb_strlen($value) > 90 || in_array($key, self::LONG_KEYS, true);

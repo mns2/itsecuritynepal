@@ -33,7 +33,7 @@ class InstructorForm
                         TagsInput::make('certifications')->placeholder('e.g. Red Hat Certified Engineer'),
                     ]),
                     Grid::make(3)->schema([
-                        FileUpload::make('photo')->image()->avatar()->disk('public')->directory('instructors')->maxSize(1024),
+                        FileUpload::make('photo')->hintIcon('heroicon-m-photo')->hint('600 × 600 px (square)')->image()->avatar()->disk('public')->directory('instructors')->maxSize(1024),
                         Select::make('category_id')->relationship('category', 'name')->label('Main track'),
                         TextInput::make('linkedin_url')->url()->label('LinkedIn URL'),
                     ]),

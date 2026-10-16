@@ -100,4 +100,23 @@ class PublicPagesTest extends TestCase
     {
         $this->get('/')->assertSee('Individual training')->assertSee('Group training')->assertSee('Corporate batch')->assertSee('value="Corporate Batch"', false)->assertDontSee('1,580+');
     }
+
+    public function test_localhost_app_url_is_replaced_on_a_public_host(): void
+    {
+        config(['app.url' => 'http://localhost:8000', 'filesystems.disks.public.url' => 'http://localhost:8000/storage', 'app.debug' => true]);
+
+        $html = $this->get('https://new.itsecuritynepal.com/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('<link rel="canonical" href="https://new.itsecuritynepal.com/">', $html);
+        $this->assertStringContainsString('https://new.itsecuritynepal.com/storage/stock/home-hero-main.webp', $html);
+        $this->assertStringNotContainsString('localhost:8000', $html);
+        $this->assertFalse(config('app.debug'));
+    }
+
+    public function test_local_development_host_is_left_alone(): void
+    {
+        config(['app.debug' => true]);
+        $this->get('/')->assertOk()->assertSee('http://localhost/storage/stock/home-hero-main.webp', false);
+        $this->assertTrue(config('app.debug'));
+    }
 }

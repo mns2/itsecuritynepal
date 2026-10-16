@@ -64,13 +64,31 @@ class DashboardTest extends TestCase
     public function test_enquiry_can_be_enrolled_as_student(): void
     {
         $lead = $this->lead(['audience' => 'Corporate Batch', 'organisation' => 'Example Ltd']);
+        $class = TrainingClass::create(['course_id' => $lead->course_id, 'name' => 'Test batch', 'starts_on' => today(), 'status' => 'ongoing']);
+        $data = ['course_id' => $lead->course_id, 'training_class_id' => $class->id, 'enrolled_on' => today()->toDateString(),
+            'fee_total' => 30000, 'fee_discount' => 5000, 'discount_reason' => 'Test offer', 'fee_paid' => 10000, 'payment_method' => 'esewa', 'receipt_no' => 'R-1'];
+
+        // Fee confirmation is required
+        Livewire::test(EditEnquiry::class, ['record' => $lead->getRouteKey()])
+            ->callAction('enrol', $data + ['fee_confirmed' => false])
+            ->assertHasActionErrors(['fee_confirmed']);
+        $this->assertSame(0, Student::count());
 
         Livewire::test(EditEnquiry::class, ['record' => $lead->getRouteKey()])
-            ->callAction('enrol', ['course_id' => $lead->course_id, 'enrolled_on' => today()->toDateString()])
+            ->callAction('enrol', $data + ['fee_confirmed' => true])
             ->assertHasNoActionErrors();
 
         $student = Student::sole();
-        $this->assertSame(['Test Lead', 'Corporate Batch', 'Example Ltd', 'enrolled', $lead->id], [$student->name, $student->audience, $student->organisation, $student->status, $student->enquiry_id]);
+        $this->assertSame(['Test Lead', 'Corporate Batch', 'Example Ltd', 'enrolled', $lead->id, $class->id], [$student->name, $student->audience, $student->organisation, $student->status, $student->enquiry_id, $student->training_class_id]);
+        $this->assertSame([25000, 10000, 15000, 'partial'], [$student->feePayable(), (int) $student->fee_paid, $student->feeBalance(), $student->paymentStatus()]);
+        $this->assertTrue($student->fee_confirmed);
+        $this->assertNotNull($student->fee_confirmed_by);
+        $this->assertSame(['esewa', 'R-1', 10000], [$student->payments()->sole()->method, $student->payments()->sole()->receipt_no, $student->payments()->sole()->amount]);
         $this->assertSame('enrolled', $lead->fresh()->status);
+
+        // A later instalment updates the total paid
+        $student->payments()->create(['amount' => 15000, 'paid_on' => today(), 'method' => 'cash']);
+        $this->assertSame([25000, 0, 'paid'], [(int) $student->fresh()->fee_paid, $student->fresh()->feeBalance(), $student->fresh()->paymentStatus()]);
+        $this->get('/admin/payments')->assertOk()->assertSee('Collected today');
     }
 }

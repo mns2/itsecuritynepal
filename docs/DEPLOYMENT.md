@@ -21,7 +21,7 @@ Hosting and email details were not yet confirmed when this was written; both com
 | `SESSION_SECURE_COOKIE` | `true` once HTTPS is on |
 | `GA4_MEASUREMENT_ID` | optional; can also be set in Admin → Site settings → Analytics |
 
-Never commit `.env`. Enquiries are always saved in the database even if email sending fails (the failure is logged).
+Never commit `.env`. **After every change to `.env` on the server, run `php artisan optimize`** (config is cached). Enquiries are always saved in the database even if email sending fails (the failure is logged).
 
 ## 2. Build on your computer (the server never compiles anything)
 
@@ -47,17 +47,39 @@ Never upload `public/hot`: it exists only while `npm run dev` runs and makes the
 1. Create a MySQL database + user in cPanel.
 2. Upload the project **outside** `public_html`, e.g. `/home/USER/itsn-laravel/`.
 3. Point the domain's document root to `/home/USER/itsn-laravel/public` (cPanel → Domains). If the root cannot be changed, copy the contents of `public/` into `public_html` and edit the two paths in `public_html/index.php` to `../itsn-laravel/vendor/autoload.php` and `../itsn-laravel/bootstrap/app.php`.
-4. Create `.env` from `.env.example` with the values above.
+4. Create `.env` from **`.env.production.example`** (never from `.env.example`: it has local values `APP_URL=http://localhost:8000`, `APP_DEBUG=true`). Set `APP_URL` to the real address (staging: `https://new.itsecuritynepal.com`).
 5. In cPanel → Terminal (or SSH):
    ```bash
    php artisan key:generate
+   php artisan config:clear
    php artisan migrate --force --seed
    php artisan storage:link
    php artisan optimize
    php artisan filament:optimize
    ```
-6. In `public/.htaccess`, uncomment the **Force HTTPS** lines after the SSL certificate (AutoSSL) is active.
-7. Queue: not required (emails are sent immediately). Cron: not required.
+6. Security files (already in the release):
+   - `public/.htaccess`: forces HTTPS and `www` → `itsecuritynepal.com`, blocks hidden/config files and PHP in upload folders, sends security headers (HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy), caching and compression.
+     **Make sure SSL (cPanel → SSL/TLS Status → AutoSSL) is active first.** On a staging domain without SSL, comment out the *Force HTTPS* rule and the HSTS header.
+     If you later add a third-party script, embed or font (e.g. a Google Map), add its domain to the `Content-Security-Policy` line or the browser will block it.
+   - `storage/app/public/.htaccess`: uploaded files can never run as scripts (served at `/storage/`).
+   - `.htaccess` in the project root: a safety net that keeps `.env`, `vendor/` etc. private if the whole project is ever placed inside `public_html`.
+   - `public/.user.ini`: PHP limits for 4 MB photo uploads, errors hidden from visitors. If your host ignores it, set the same values in cPanel → MultiPHP INI Editor.
+   - After going live, check the headers at https://securityheaders.com (expected grade A).
+7. **Cron: optional.** Email campaigns are sent from the admin's *Email campaigns* page while it is open, so nothing else is required.
+   If you want them to keep sending with the page closed (and scheduled emails to go out on time unattended), add in cPanel → Cron Jobs, every minute:
+   `* * * * * cd /home/USER/itsn-laravel && php artisan schedule:run >> /dev/null 2>&1`
+   The page then shows "Automatic sending on". Queue worker: not needed. Sending speed is set in Admin → Site settings → Pop-ups → Newsletter.
+8. Instructor portal: `/trainer` (no extra setup). Optional: `GOOGLE_PLACES_API_KEY` for Google reviews (restrict the key to *Places API (New)* and your server in Google Cloud).
+9. After updating an existing site: `php artisan migrate --force`, then `php artisan db:seed --class=CareerPathwaysSeeder --force` once (fills empty career-pathway texts only; safe on live data).
+8. **Every page shows "403 Forbidden" but images/CSS load?** File permissions are too open (777/666), and LiteSpeed refuses to run world-writable PHP. Older release zips (made with `tar` before 2026-10-16) caused this; the current `make-release.ps1` does not. Fix in cPanel → Terminal:
+   ```bash
+   cd ~/new.itsecuritynepal.com   # the project folder
+   find . -type d -exec chmod 755 {} +
+   find . -type f -exec chmod 644 {} +
+   ```
+   Also check: hidden files are visible in File Manager (Settings → Show Hidden Files) and `public/.htaccess` exists; cPanel → Errors shows the exact reason if it persists.
+9. **"Composer detected issues… PHP >= 8.3", or every `.php` file returns 403/404 while `.txt` files load?** The PHP version/handler is wrong. On the current host (CloudLinux + LiteSpeed) the working setup is: **no** `AddHandler` block in `public/.htaccess` (the MultiPHP `ea-php84` handler gave 403, `alt-php84` gave 404), and PHP 8.4 set in cPanel → **Select PHP Version** with the extensions `bcmath ctype curl fileinfo gd intl mbstring openssl pdo_mysql tokenizer xml zip`. If MultiPHP Manager writes a handler block back into `public/.htaccess`, remove it. Test with a one-line `test.php` (`<?php echo PHP_VERSION;`), then delete it. In Terminal, check `php -v` shows 8.3+ before running artisan.
+10. **500 error right after admin login:** run `php artisan migrate --force && php artisan optimize:clear && php artisan optimize`; if it persists, read `storage/logs/laravel.log`.
 
 ## 3b. VPS (Ubuntu + Nginx + PHP-FPM)
 

@@ -7,6 +7,7 @@ use App\Filament\Widgets\LatestEnquiries;
 use App\Filament\Widgets\LeadsByAudience;
 use App\Filament\Widgets\LeadsChart;
 use App\Filament\Widgets\OngoingClasses;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -42,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
                 'info' => Color::hex('#1f5bb8'),
                 'warning' => Color::hex('#f9b233'),
             ])
-            ->font('Inter')
+            ->font('Inter', url: asset('fonts/admin/inter.css'), provider: LocalFontProvider::class) // self-hosted: no third-party font CDN (CSP)
             ->darkMode(false) // brand rule: no dark theme, admin included
             ->navigationGroups(['Leads', 'Training', 'Catalogue', 'Content', 'Settings'])
             ->navigationItems([
@@ -51,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([Dashboard::class])
-            ->widgets([EnquiryStats::class, LeadsChart::class, LeadsByAudience::class, OngoingClasses::class, LatestEnquiries::class])
+            ->widgets([\App\Filament\Widgets\ContentOverview::class, EnquiryStats::class, LeadsChart::class, LeadsByAudience::class, OngoingClasses::class, LatestEnquiries::class])
             ->databaseNotifications(false)
             ->middleware([
                 EncryptCookies::class,

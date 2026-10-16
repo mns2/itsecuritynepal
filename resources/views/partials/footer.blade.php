@@ -1,6 +1,18 @@
 @php($contact = $site['contact'] ?? [])
 <footer class="on-dark bg-navy-700 text-navy-100" aria-labelledby="footer-heading">
     <h2 id="footer-heading" class="sr-only">Site footer</h2>
+    @php($nl = \App\Support\Popups::get('newsletter'))
+    @if ($nl['footer_enabled'] ?? false)
+        <div class="border-b border-white/10">
+            <div class="container-page grid gap-6 py-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-12">
+                <div>
+                    <p class="font-display text-xl font-bold text-white">{{ $nl['title'] }}</p>
+                    @if (filled($nl['text'] ?? null))<p class="mt-1.5 text-[0.9375rem]">{{ $nl['text'] }}</p>@endif
+                </div>
+                <x-newsletter-form id="footer-newsletter" source="footer" :button="$nl['button']" :dark="true" />
+            </div>
+        </div>
+    @endif
     <div class="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.4fr] lg:gap-8 lg:py-16">
         <div class="max-w-sm">
             <a href="/" class="inline-block rounded-md bg-white p-2.5" aria-label="IT Security Nepal home">

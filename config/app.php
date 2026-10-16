@@ -41,6 +41,10 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+    // Debug pages are forced off whenever the site is reached on a public host (AppServiceProvider::guardPublicHost),
+    // even if APP_DEBUG=true. Set ALLOW_PUBLIC_DEBUG=true only for a short, deliberate investigation on staging.
+    'allow_public_debug' => (bool) env('ALLOW_PUBLIC_DEBUG', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL

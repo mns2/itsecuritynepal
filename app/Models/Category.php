@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
+    use \App\Models\Concerns\HasSeo;
+
     protected $guarded = ['id'];
 
     protected $casts = [

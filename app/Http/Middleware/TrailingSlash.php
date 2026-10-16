@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The live site uses trailing-slash URLs (/redhat/). Keep them canonical: GET/HEAD requests for
- * page URLs without a trailing slash are 301-redirected. Files (.xml, .txt, .json…) and /admin, /livewire are untouched.
+ * page URLs without a trailing slash are 301-redirected. Files (.xml, .txt, .json…) and /admin, /trainer, /livewire are untouched.
  */
 class TrailingSlash
 {
@@ -21,7 +21,7 @@ class TrailingSlash
             && $path !== '/'
             && ! str_ends_with($path, '/')
             && ! str_contains(basename($path), '.')
-            && ! preg_match('#^/(admin|livewire|filament|storage|build|up)(/|$)#', $path)) {
+            && ! preg_match('#^/(admin|trainer|livewire|filament|storage|build|up|newsletter|campaigns|offer-track)(/|$)#', $path)) {
             $query = $request->getQueryString();
 
             // Build the URL by hand: Laravel's URL generator would strip the trailing slash again.

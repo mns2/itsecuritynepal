@@ -25,6 +25,7 @@ class EnquiriesTable
                 TextColumn::make('phone')->searchable()->copyable(),
                 TextColumn::make('email')->searchable()->toggleable(),
                 TextColumn::make('course.name')->label('Course')->placeholder(fn ($record) => $record->interest ? ucfirst($record->interest) : '—')->wrap(),
+                TextColumn::make('campaign.name')->label('Campaign')->badge()->color('warning')->placeholder('—')->toggleable(),
                 TextColumn::make('audience')->badge()->color(fn ($state) => match ($state) {
                     'Group' => 'warning', 'Corporate', 'Corporate Batch' => 'info', default => 'gray'
                 }),
@@ -32,10 +33,11 @@ class EnquiriesTable
             ])
             ->filters([
                 SelectFilter::make('status')->options(Enquiry::STATUSES)->default('new'),
+                SelectFilter::make('campaign')->relationship('campaign', 'name')->searchable()->preload(),
                 SelectFilter::make('audience')->options(['Individual' => 'Individual', 'Group' => 'Group', 'Corporate Batch' => 'Corporate Batch', 'Corporate' => 'Corporate (corporate page form)']),
                 SelectFilter::make('form')->options(Enquiry::FORMS),
             ])
-            ->recordActions([EditAction::make()->label('Open')])
+            ->recordActions([\App\Filament\Resources\Enquiries\Pages\EditEnquiry::enrolAction(), EditAction::make()->label('Open')])
             ->toolbarActions([
                 BulkActionGroup::make([
                     BulkAction::make('contacted')->label('Mark as contacted')->icon('heroicon-o-phone')

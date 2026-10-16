@@ -112,6 +112,22 @@ class SiteController extends Controller
         return view('pages.faq', ['groups' => Faq::where('is_published', true)->orderBy('sort')->get()->groupBy('group')]);
     }
 
+    public function careerPathways(): View
+    {
+        return view('pages.career-pathways', ['paths' => LearningPath::where('is_published', true)->orderBy('sort')->get()]);
+    }
+
+    public function careerPathway(string $slug): View
+    {
+        $path = LearningPath::where('slug', $slug)->where('is_published', true)->firstOrFail();
+
+        return view('pages.career-pathway', [
+            'path' => $path,
+            'steps' => $path->resolvedSteps(),
+            'others' => LearningPath::where('is_published', true)->whereKeyNot($path->id)->orderBy('sort')->get(),
+        ]);
+    }
+
     /** Root-level legacy slugs: category → course → post → training method → legal page. */
     public function slug(string $slug): View
     {

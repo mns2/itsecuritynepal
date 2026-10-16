@@ -17,6 +17,10 @@ use Filament\Tables\Table;
 
 class TrainingClassResource extends Resource
 {
+    use \App\Filament\Concerns\RestrictedToArea;
+
+    protected static string $accessArea = 'training';
+
     protected static ?string $model = TrainingClass::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPresentationChartBar;
@@ -59,7 +63,7 @@ class TrainingClassResource extends Resource
 
     public static function getRelations(): array
     {
-        return [StudentsRelationManager::class];
+        return [StudentsRelationManager::class, RelationManagers\SessionsRelationManager::class];
     }
 
     public static function getPages(): array

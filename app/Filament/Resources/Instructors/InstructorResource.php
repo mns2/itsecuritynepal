@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class InstructorResource extends Resource
 {
+    use \App\Filament\Concerns\RestrictedToArea;
+
+    protected static string $accessArea = 'content';
+
     protected static ?string $model = Instructor::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;

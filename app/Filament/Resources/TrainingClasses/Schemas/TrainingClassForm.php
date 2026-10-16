@@ -28,9 +28,17 @@ class TrainingClassForm
                         TextInput::make('name')->label('Class name')->required()->maxLength(160)->placeholder('e.g. RHCSA · Morning · Nov 2026')->columnSpan(2),
                         Select::make('audience')->label('Training for')->options(array_combine(Enquiry::AUDIENCES, Enquiry::AUDIENCES))->default('Individual')->required()->live()->native(false),
                         TextInput::make('organisation')->maxLength(160)->visible(fn (Get $get) => $get('audience') === 'Corporate Batch')->columnSpan(2),
-                        TextInput::make('trainer')->maxLength(120),
+                        Select::make('instructor_user_id')->label('Instructor account')->native(false)->searchable()
+                            ->options(fn () => \App\Models\User::where('role', 'instructor')->where('is_active', true)->orderBy('name')->pluck('name', 'id'))
+                            ->live()->afterStateUpdated(fn ($state, \Filament\Schemas\Components\Utilities\Set $set) => $state ? $set('trainer', \App\Models\User::find($state)?->name) : null)
+                            ->helperText('Lets this instructor sign in at /trainer, see the class and take attendance. Add accounts in Settings → Staff accounts.'),
+                        TextInput::make('trainer')->label('Trainer name (shown on lists)')->maxLength(120),
                         TextInput::make('mode')->placeholder('Classroom / Live Online'),
-                        TextInput::make('schedule')->placeholder('e.g. Sun – Fri · 7:00 – 9:00 AM'),
+                        \Filament\Forms\Components\CheckboxList::make('days')->label('Class days')->options(TrainingClass::DAYS)->columns(7)->columnSpan(3)
+                            ->default(['sun', 'mon', 'tue', 'wed', 'thu', 'fri']),
+                        \Filament\Forms\Components\TimePicker::make('start_time')->label('Class starts')->seconds(false),
+                        \Filament\Forms\Components\TimePicker::make('end_time')->label('Class ends')->seconds(false)->after('start_time'),
+                        TextInput::make('schedule')->label('Schedule text (optional)')->placeholder('Empty = built from days and times'),
                         TextInput::make('capacity')->label('Seats')->numeric()->minValue(1),
                         DatePicker::make('starts_on')->label('Starts')->required()->native(false)->default(now()),
                         DatePicker::make('ends_on')->label('Ends')->native(false)->afterOrEqual('starts_on'),

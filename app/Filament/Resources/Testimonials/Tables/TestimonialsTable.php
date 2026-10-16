@@ -26,7 +26,6 @@ class TestimonialsTable
                 IconColumn::make('is_published')
                     ->boolean(),
                 TextColumn::make('sort')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()

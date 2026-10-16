@@ -28,7 +28,6 @@ class TrainingMethodsTable
                 TextColumn::make('verification_note')
                     ->searchable(),
                 TextColumn::make('sort')
-                    ->numeric()
                     ->sortable(),
                 IconColumn::make('is_published')
                     ->boolean(),

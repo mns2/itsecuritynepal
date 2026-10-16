@@ -218,7 +218,10 @@
         @foreach ($paths as $p)
             @php($steps = $p->resolvedSteps())
             <div role="tabpanel" id="panel-{{ $p->key }}" aria-labelledby="tab-{{ $p->key }}" x-show="tab === '{{ $p->key }}'" @unless ($loop->first) x-cloak @endunless class="mt-6">
-                <p class="text-ink-muted">Goal: <strong class="text-navy-700">{{ $p->goal }}</strong></p>
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <p class="text-ink-muted">Goal: <strong class="text-navy-700">{{ $p->goal }}</strong></p>
+                    @if ($p->slug)<a href="{{ $p->url() }}" class="link-arrow">Career pathway: {{ $p->name }} <x-icon name="arrow-right" class="size-4" /></a>@endif
+                </div>
                 <ol class="mt-5 grid gap-3 md:grid-cols-{{ max(1, min(5, $steps->count())) }}">
                     @foreach ($steps as $s)
                         <li>
@@ -277,6 +280,9 @@
         </div>
     </div>
 </section>
+
+{{-- GOOGLE REVIEWS (only when configured in Site settings) --}}
+@if (\App\Support\GoogleReviews::settings()['show_home'])<x-google-reviews />@endif
 
 {{-- WHY CHOOSE US --}}
 <section class="section bg-surface" aria-labelledby="why-title">

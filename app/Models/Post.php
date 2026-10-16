@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
+    use \App\Models\Concerns\HasSeo;
+
     protected $guarded = ['id'];
 
     protected $casts = [

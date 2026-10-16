@@ -19,10 +19,8 @@ class RedirectsTable
                 TextColumn::make('to_path')
                     ->searchable(),
                 TextColumn::make('status_code')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('hits')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()

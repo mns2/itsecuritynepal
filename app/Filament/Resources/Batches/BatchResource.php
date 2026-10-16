@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class BatchResource extends Resource
 {
+    use \App\Filament\Concerns\RestrictedToArea;
+
+    protected static string $accessArea = 'catalogue';
+
     protected static ?string $model = Batch::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;

@@ -9,6 +9,11 @@ use Illuminate\Support\Carbon;
 
 class LeadsChart extends ChartWidget
 {
+    public static function canView(): bool
+    {
+        return \App\Support\Access::allows('leads');
+    }
+
     protected static ?int $sort = 2;
 
     protected static bool $isLazy = false;

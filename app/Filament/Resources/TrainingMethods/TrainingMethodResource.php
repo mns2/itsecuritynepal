@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class TrainingMethodResource extends Resource
 {
+    use \App\Filament\Concerns\RestrictedToArea;
+
+    protected static string $accessArea = 'catalogue';
+
     protected static ?string $model = TrainingMethod::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPresentationChartBar;

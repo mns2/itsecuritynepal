@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call(ContentImportSeeder::class);
+        $this->call([ContentImportSeeder::class, CareerPathwaysSeeder::class]);
 
         // Admin account from environment variables only (never hard-coded). See .env.example.
         $email = env('ADMIN_EMAIL');

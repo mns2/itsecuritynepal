@@ -7,6 +7,11 @@ use Filament\Widgets\ChartWidget;
 
 class LeadsByAudience extends ChartWidget
 {
+    public static function canView(): bool
+    {
+        return \App\Support\Access::allows('leads');
+    }
+
     protected static ?int $sort = 3;
 
     protected static bool $isLazy = false;

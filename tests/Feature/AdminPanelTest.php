@@ -47,9 +47,9 @@ class AdminPanelTest extends TestCase
         }
     }
 
-    public function test_enquiries_cannot_be_created_from_admin(): void
+    public function test_staff_can_add_a_walk_in_enquiry(): void
     {
         $this->actingAs(User::factory()->create());
-        $this->get('/admin/enquiries/create')->assertNotFound();
+        $this->get('/admin/enquiries/create')->assertOk();
     }
 }

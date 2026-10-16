@@ -1,0 +1,32 @@
+# =============================================================================
+#  Safety net for the PROJECT ROOT (itsn-laravel/).
+#  Normally the domain's document root points at itsn-laravel/public and this
+#  file is never used. If the whole project ends up inside public_html by
+#  mistake, this keeps .env, vendor/, storage/ etc. private and sends every
+#  request into public/.
+# =============================================================================
+Options -Indexes -MultiViews
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Allow SSL certificate validation
+    RewriteRule ^\.well-known/ - [L]
+
+    # Everything else goes through public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# If mod_rewrite is missing, refuse everything rather than expose the app
+<IfModule !mod_rewrite.c>
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</IfModule>
+
+<FilesMatch "^\.|\.(env|log|sql|sqlite|json|lock|xml|md|ps1|sh|ini)$|^artisan$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>

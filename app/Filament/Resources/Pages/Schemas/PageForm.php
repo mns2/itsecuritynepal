@@ -28,6 +28,7 @@ class PageForm
                     Textarea::make('meta_description')->rows(2)->maxLength(320),
                     Toggle::make('is_published')->default(true),
                 ]),
+            \App\Filament\Schemas\SeoFields::relationshipSection(),
         ]);
     }
 }

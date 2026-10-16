@@ -32,7 +32,7 @@ class PostForm
                     ->toolbarButtons(['heading', 'bold', 'italic', 'link', 'bulletList', 'orderedList', 'blockquote', 'table', 'undo', 'redo']),
             ]),
             Section::make('Media, related courses & SEO')->columnSpanFull()->collapsed()->schema([
-                FileUpload::make('featured_image')->image()->disk('public')->directory('blog')->imageEditor()->maxSize(2048)
+                FileUpload::make('featured_image')->hintIcon('heroicon-m-photo')->hint('1200 × 675 px (16:9); also used when shared on Facebook')->image()->disk('public')->directory('blog')->imageEditor()->maxSize(2048)
                     ->helperText('16:9, at least 1200 × 675 px. Shown on the article and in social shares.'),
                 Select::make('related_course_ids')->label('Related courses')->multiple()->searchable()
                     ->options(fn () => Course::orderBy('sort')->get()->mapWithKeys(fn ($c) => [$c->id => "{$c->code} · {$c->name}"])),
@@ -40,6 +40,7 @@ class PostForm
                 TextInput::make('meta_title')->maxLength(70),
                 Textarea::make('meta_description')->rows(2)->maxLength(320),
             ]),
+            \App\Filament\Schemas\SeoFields::relationshipSection(),
         ]);
     }
 }

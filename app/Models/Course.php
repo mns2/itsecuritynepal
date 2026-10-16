@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
+    use \App\Models\Concerns\HasSeo;
+
     public const LEVELS = ['Beginner', 'Intermediate', 'Advanced'];
 
     public const MODES = ['Classroom', 'Live Online', 'One-on-One'];

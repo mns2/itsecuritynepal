@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-D93eznq2.css",
+    "file": "assets/app-YCZQKmCh.css",
     "name": "app",
     "names": [
       "app.css"
@@ -26,7 +26,7 @@
     "src": "resources/fonts/plus-jakarta-sans-latin-wght-normal.woff2"
   },
   "resources/js/app.js": {
-    "file": "assets/app-DQqOqewF.js",
+    "file": "assets/app-qX5ExRwp.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true

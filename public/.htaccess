@@ -1,27 +1,117 @@
-<IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
+# =============================================================================
+#  IT Security Nepal: hardened .htaccess for Apache / LiteSpeed (cPanel)
+#  Lives in public/ (the document root). Every block is wrapped in <IfModule>,
+#  so a missing module never causes a 500 error.
+#
+#  BEFORE GO-LIVE: HTTPS and HSTS below assume an SSL certificate is active
+#  (cPanel → SSL/TLS Status → AutoSSL). On a staging domain without SSL,
+#  comment out the "Force HTTPS" rule and the HSTS header.
+# =============================================================================
 
+# --- Basics ------------------------------------------------------------------
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Handle Authorization Header
+    # Block TRACE / TRACK (cross-site tracing)
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK) [NC]
+    RewriteRule ^ - [F]
+
+    # One canonical host in one hop: www.itsecuritynepal.com → https://itsecuritynepal.com
+    RewriteCond %{HTTP_HOST} ^www\.itsecuritynepal\.com$ [NC]
+    RewriteRule ^ https://itsecuritynepal.com%{REQUEST_URI} [L,R=301]
+
+    # Force HTTPS (X-Forwarded-Proto covers hosts behind a proxy / Cloudflare)
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Hidden files and folders (.env, .git, .user.ini …), except .well-known (SSL validation)
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+    # Files that must never be served even if uploaded here by mistake
+    RewriteRule (^|/)(composer\.(json|lock)|package(-lock)?\.json|artisan|phpunit\.xml|vite\.config\.js|hot|.*\.(env|log|sql|sqlite|bak|old|orig|swp|dist|ini|sh|ps1|md))$ - [F,L,NC]
+
+    # Never execute PHP from uploads, build output or static folders
+    RewriteRule ^(storage|build|css|js|fonts|images)/.*\.(php\d?|phtml|phar|pl|py|cgi)$ - [F,L,NC]
+
+    # Pass the Authorization and X-XSRF-Token headers to PHP
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    # Handle X-XSRF-Token Header
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # NOTE: Laravel's default "strip trailing slash" redirect is intentionally removed.
+    # NOTE: Laravel's default "strip trailing slash" redirect is intentionally absent.
     # This site keeps the live site's trailing-slash URLs (/redhat/); App\Http\Middleware\TrailingSlash adds them.
 
-    # Force HTTPS in production (uncomment once the SSL certificate is installed)
-    # RewriteCond %{HTTPS} !=on
-    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-    # Send Requests To Front Controller...
+    # Front controller
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Second line of defence when mod_rewrite rules are skipped
+<FilesMatch "^\.(?!well-known)|\.(env|log|sql|sqlite|bak|old|orig|swp|ini|sh|ps1|md)$|^(composer\.(json|lock)|package(-lock)?\.json|artisan|hot)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+# --- Security headers --------------------------------------------------------
+<IfModule mod_headers.c>
+    # HTTPS only for 1 year (browsers ignore it on plain-HTTP responses).
+    # Add "; preload" only after confirming every subdomain has SSL.
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set X-Permitted-Cross-Domain-Policies "none"
+
+    # Content Security Policy
+    #  - scripts/styles/fonts are self-hosted; Google Analytics loads only after cookie consent
+    #  - 'unsafe-eval' and 'unsafe-inline' are required by Alpine.js / Livewire / Filament (admin)
+    #  - img-src allows https: because admins may paste image URLs; blob:/data: are used by the photo uploader
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; media-src 'self'; worker-src 'self' blob:; frame-src 'none'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+
+    # Do not reveal the PHP version
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+
+    # Uploaded files (public/storage) get extra rules from storage/app/public/.htaccess
+</IfModule>
+
+# --- Caching -----------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 0 seconds"
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 month"
+    ExpiresByType application/json "access plus 0 seconds"
+    ExpiresByType application/xml "access plus 0 seconds"
+</IfModule>
+
+# --- Compression -------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml text/javascript application/javascript application/json application/xml application/ld+json image/svg+xml
+</IfModule>
+
+# --- MIME types --------------------------------------------------------------
+<IfModule mod_mime.c>
+    AddType font/woff2 .woff2
+    AddType image/webp .webp
+    AddType application/manifest+json .webmanifest
 </IfModule>

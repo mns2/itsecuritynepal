@@ -12,6 +12,11 @@ use Filament\Widgets\TableWidget;
 /** Ongoing classes first, then classes starting soon. */
 class OngoingClasses extends TableWidget
 {
+    public static function canView(): bool
+    {
+        return \App\Support\Access::allows('training');
+    }
+
     protected static ?int $sort = 4;
 
     protected static bool $isLazy = false;

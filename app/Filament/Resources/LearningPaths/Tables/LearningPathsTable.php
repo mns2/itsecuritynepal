@@ -24,7 +24,6 @@ class LearningPathsTable
                 TextColumn::make('goal')
                     ->searchable(),
                 TextColumn::make('sort')
-                    ->numeric()
                     ->sortable(),
                 IconColumn::make('is_published')
                     ->boolean(),

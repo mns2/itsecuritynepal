@@ -2,19 +2,27 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Campaign;
 use App\Models\Setting;
+use App\Support\GoogleReviews;
+use App\Support\Popups;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Actions;
+use Illuminate\Support\Facades\Cache;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use UnitEnum;
@@ -22,6 +30,11 @@ use UnitEnum;
 /** Edits the key/value `settings` table: announcement bar, contact details, social links, stats, audiences, analytics. */
 class SiteSettings extends Page
 {
+    public static function canAccess(): bool
+    {
+        return \App\Support\Access::allows('settings');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static string|UnitEnum|null $navigationGroup = 'Settings';
@@ -34,11 +47,11 @@ class SiteSettings extends Page
 
     public ?array $data = [];
 
-    private const KEYS = ['announcement', 'contact', 'social', 'trust', 'audiences', 'analytics'];
+    private const KEYS = ['announcement', 'contact', 'social', 'trust', 'audiences', 'analytics', 'popups', 'reviews'];
 
     public function mount(): void
     {
-        $this->form->fill(collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => Setting::get($k, [])])->all());
+        $this->form->fill(collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => match ($k) { 'popups' => Popups::settings(), 'reviews' => GoogleReviews::settings(), default => Setting::get($k, []) }])->all());
     }
 
     public function form(Schema $schema): Schema
@@ -101,6 +114,92 @@ class SiteSettings extends Page
                         Repeater::make('points')->simple(TextInput::make('text')->required()),
                     ])->itemLabel(fn (array $state) => $state['title'] ?? null)->collapsible()->reorderable(),
                 ]),
+                Tab::make('Pop-ups')->icon('heroicon-o-window')->schema([
+                    Section::make()->description('Only one pop-up is shown per page view. When several are switched on, a live campaign comes first, then the Course Finder, then the newsletter. Pop-ups never appear over the enquiry form or in the admin panel.')->schema([]),
+                    Section::make('Marketing offers and campaigns')->schema([
+                        Toggle::make('popups.campaigns_enabled')->label('Show campaign pop-ups on the website')
+                            ->helperText('Master switch. Each campaign also has its own Active switch (Leads → Campaigns). Landing pages (/offer/…/) keep working.'),
+                    ])->compact(),
+                    Section::make('Course Finder pop-up')->schema([
+                        Toggle::make('popups.course_finder.enabled')->label('Show the Course Finder pop-up')->live(),
+                        Grid::make(4)->schema([
+                            TextInput::make('popups.course_finder.delay_seconds')->label('Seconds after opening')->numeric()->minValue(0)->maxValue(120)->required(),
+                            Select::make('popups.course_finder.frequency')->label('How often')->options(Popups::FREQUENCIES)->native(false)->required(),
+                            Select::make('popups.course_finder.show_on')->label('Pages')->options(['all' => 'Every page', 'home' => 'Homepage only'])->native(false)->required(),
+                            Select::make('popups.course_finder.device')->label('Devices')->options(Campaign::DEVICES)->native(false)->required(),
+                        ]),
+                        Grid::make(2)->schema([
+                            TextInput::make('popups.course_finder.badge')->maxLength(40),
+                            TextInput::make('popups.course_finder.button')->label('Button text')->maxLength(40)->required(),
+                        ]),
+                        TextInput::make('popups.course_finder.title')->maxLength(120)->required(),
+                        Textarea::make('popups.course_finder.text')->rows(2)->maxLength(300),
+                        FileUpload::make('popups.course_finder.image')->label('Image (optional)')->hintIcon('heroicon-m-photo')->hint('1280 × 720 px (16:9)')->image()->disk('public')->directory('popups')->maxSize(4096),
+                    ])->compact()->collapsible(),
+                    Section::make('Newsletter and offers sign-up')->schema([
+                        Grid::make(3)->schema([
+                            Toggle::make('popups.newsletter.enabled')->label('Show the newsletter pop-up')->live(),
+                            Toggle::make('popups.newsletter.footer_enabled')->label('Show the sign-up box in the footer'),
+                            Toggle::make('popups.newsletter.double_opt_in')->label('Ask new subscribers to confirm by email (recommended)')
+                                ->helperText('Keeps fake and mistyped addresses off the list. Needs working email (SMTP).'),
+                        ]),
+                        Grid::make(4)->schema([
+                            Select::make('popups.newsletter.trigger')->label('Show')->options(Campaign::TRIGGERS)->native(false)->required()->live(),
+                            TextInput::make('popups.newsletter.delay_seconds')->label('Seconds after opening')->numeric()->minValue(0)->maxValue(300)
+                                ->visible(fn (Get $get) => $get('popups.newsletter.trigger') === 'delay'),
+                            TextInput::make('popups.newsletter.scroll_percent')->label('Percent scrolled')->numeric()->minValue(5)->maxValue(95)->suffix('%')
+                                ->visible(fn (Get $get) => $get('popups.newsletter.trigger') === 'scroll'),
+                            Select::make('popups.newsletter.frequency')->label('How often')->options(Popups::FREQUENCIES)->native(false)->required(),
+                            Select::make('popups.newsletter.device')->label('Devices')->options(Campaign::DEVICES)->native(false)->required(),
+                        ]),
+                        Grid::make(2)->schema([
+                            TextInput::make('popups.newsletter.badge')->maxLength(40),
+                            TextInput::make('popups.newsletter.button')->label('Button text')->maxLength(40)->required(),
+                        ]),
+                        TextInput::make('popups.newsletter.per_minute')->label('Email campaigns: emails per minute')->numeric()->minValue(1)->maxValue(300)->required()
+                            ->helperText('Keep under your hosting email limit. Example: a limit of 500 per hour means at most 8 per minute.'),
+                        TextInput::make('popups.newsletter.title')->maxLength(120)->required(),
+                        Textarea::make('popups.newsletter.text')->rows(2)->maxLength(300),
+                    ])->compact()->collapsible(),
+                ]),
+                Tab::make('Google reviews')->icon('heroicon-o-star')->schema([
+                    Section::make()->description(new \Illuminate\Support\HtmlString(
+                        'Shows your real Google rating and up to 5 recent reviews from your Google Business Profile. '
+                        .'Needs <code>GOOGLE_PLACES_API_KEY</code> in the server\'s .env '.(filled(config('services.google.places_key')) ? '(<strong>set</strong>)' : '(<strong>not set yet</strong>)')
+                        .' and your Place ID: find it at <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener" class="underline">Google\'s Place ID finder</a>.'
+                    ))->schema([
+                        Toggle::make('reviews.enabled')->label('Show Google reviews on the website'),
+                        Grid::make(2)->schema([
+                            TextInput::make('reviews.place_id')->label('Google Place ID')->placeholder('ChIJ…')->maxLength(200),
+                            TextInput::make('reviews.title')->label('Section heading')->maxLength(100),
+                        ]),
+                        Grid::make(4)->schema([
+                            Select::make('reviews.min_rating')->label('Show reviews with at least')->native(false)
+                                ->options([0 => 'All ratings', 3 => '3 stars', 4 => '4 stars', 5 => '5 stars'])
+                                ->helperText('The overall rating and count always show.'),
+                            Toggle::make('reviews.show_home')->label('Homepage')->inline(false),
+                            Toggle::make('reviews.show_about')->label('About page')->inline(false),
+                            Toggle::make('reviews.show_course')->label('Course pages')->inline(false),
+                        ]),
+                        Actions::make([
+                            Action::make('testReviews')->label('Test connection and refresh')->icon('heroicon-o-arrow-path')->color('gray')
+                                ->action(function () {
+                                    $this->save(silent: true);
+                                    Cache::forget('google.reviews');
+                                    $error = null;
+                                    $data = GoogleReviews::configured() ? GoogleReviews::fetch($error) : null;
+                                    if ($data) {
+                                        Cache::put('google.reviews', $data, now()->addHours(12));
+                                        Notification::make()->success()->title('Connected to Google')
+                                            ->body("Rating {$data['rating']} from {$data['count']} reviews; ".count($data['reviews']).' review texts received.')->send();
+                                    } else {
+                                        Notification::make()->danger()->title('Could not load reviews')
+                                            ->body(GoogleReviews::configured() ? ($error ?: 'Unknown error') : 'Switch it on, enter the Place ID and set GOOGLE_PLACES_API_KEY in .env first.')->send();
+                                    }
+                                }),
+                        ]),
+                    ]),
+                ]),
                 Tab::make('Analytics')->icon('heroicon-o-presentation-chart-line')->schema([
                     TextInput::make('analytics.ga4_id')->label('Google Analytics 4 measurement ID')->placeholder('G-XXXXXXXXXX')
                         ->helperText('Loaded only after the visitor accepts the cookie banner. Leave empty to disable analytics.'),
@@ -109,13 +208,16 @@ class SiteSettings extends Page
         ]);
     }
 
-    public function save(): void
+    public function save(bool $silent = false): void
     {
         $state = $this->form->getState();
         foreach (self::KEYS as $key) {
             Setting::put($key, $state[$key] ?? []);
         }
-        Notification::make()->title('Settings saved')->success()->send();
+        Cache::forget('google.reviews'); // Place ID or switch may have changed
+        if (! $silent) {
+            Notification::make()->title('Settings saved')->success()->send();
+        }
     }
 
     protected function getHeaderActions(): array

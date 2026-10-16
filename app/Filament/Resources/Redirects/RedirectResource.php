@@ -16,6 +16,10 @@ use Filament\Tables\Table;
 
 class RedirectResource extends Resource
 {
+    use \App\Filament\Concerns\RestrictedToArea;
+
+    protected static string $accessArea = 'seo';
+
     protected static ?string $model = Redirect::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowUturnRight;

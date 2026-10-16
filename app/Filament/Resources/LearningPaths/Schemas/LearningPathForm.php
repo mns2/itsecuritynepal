@@ -31,6 +31,27 @@ class LearningPathForm
                     TextInput::make('note')->placeholder('e.g. Foundations, RHCSA'),
                 ])->columns(2)->reorderable()->addActionLabel('Add step'),
             ]),
+            Section::make('Career pathway page')->columnSpanFull()->collapsible()
+                ->description(fn (?\App\Models\LearningPath $record) => $record?->slug ? 'Public page: /career-pathways/'.$record->slug.'/' : 'Public page at /career-pathways/{slug}/')
+                ->schema([
+                    Grid::make(2)->schema([
+                        TextInput::make('slug')->required()->alphaDash()->unique(ignoreRecord: true)->prefix('/career-pathways/')->suffix('/'),
+                        \Filament\Forms\Components\FileUpload::make('image')->label('Photo (optional)')->hintIcon('heroicon-m-photo')->hint('1600 × 1200 px (4:3)')->image()->disk('public')->directory('pathways')->maxSize(4096),
+                    ]),
+                    \Filament\Forms\Components\Textarea::make('intro')->label('Who it is for')->rows(2),
+                    \Filament\Forms\Components\Textarea::make('role_text')->label('What the job involves')->rows(3),
+                    Grid::make(2)->schema([
+                        \Filament\Forms\Components\TagsInput::make('skills')->label('Skills you will build'),
+                        \Filament\Forms\Components\TagsInput::make('job_titles')->label('Typical job titles'),
+                    ]),
+                    TextInput::make('salary_note')->label('Salary / demand note (optional)')->maxLength(250)
+                        ->helperText('Only add figures you can back up (e.g. from a named survey). Leave empty to hide.'),
+                    Grid::make(2)->schema([
+                        TextInput::make('meta_title')->label('Google title')->maxLength(70),
+                        \Filament\Forms\Components\Textarea::make('meta_description')->label('Google description')->rows(2)->maxLength(320),
+                    ]),
+                ]),
+            \App\Filament\Schemas\SeoFields::relationshipSection(),
         ]);
     }
 }

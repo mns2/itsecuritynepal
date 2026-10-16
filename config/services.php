@@ -29,8 +29,18 @@ return [
     ],
 
     // IT Security Nepal
+    // Google reviews (Places API New). The Place ID is set in Admin → Site settings → Google reviews.
+    'google' => [
+        'places_key' => env('GOOGLE_PLACES_API_KEY'),
+    ],
+
     'enquiries' => [
         'notify' => env('ENQUIRY_NOTIFY_EMAIL'),
+    ],
+
+    // Email campaigns: messages sent per minute by `newsletter:send` (keep under your host's hourly limit / 60).
+    'newsletter' => [
+        'per_minute' => (int) env('NEWSLETTER_PER_MINUTE', 30),
     ],
 
     'analytics' => [

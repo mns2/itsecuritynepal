@@ -74,4 +74,5 @@
     <a href="/contact/" class="btn btn-primary btn-lg">Contact us</a>
     <a href="{{ $site['contact']['mapUrl'] ?? '#' }}" class="btn btn-ghost-light btn-lg" rel="noopener" target="_blank">Get directions</a>
 </x-cta-band>
+@if (\App\Support\GoogleReviews::settings()['show_about'])<x-google-reviews class="section bg-surface" />@endif
 @endsection

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NewEnquiry;
+use App\Models\Campaign;
 use App\Models\Course;
 use App\Models\Enquiry;
+use App\Support\Newsletter;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -37,7 +39,9 @@ class EnquiryController extends Controller
             'org' => ['nullable', 'required_if:form,corporate', 'required_if:audience,Corporate Batch', 'string', 'max:160'],
             'message' => ['nullable', 'string', 'max:2000'],
             'consent' => ['accepted'],
+            'newsletter' => ['nullable', 'boolean'],
             'source_url' => ['nullable', 'string', 'max:500'],
+            'campaign' => ['nullable', 'integer'],
         ], [
             'phone.regex' => 'Enter a valid phone number, e.g. 98XXXXXXXX.',
             'consent.accepted' => 'Please agree so we can contact you.',
@@ -63,8 +67,18 @@ class EnquiryController extends Controller
             'message' => $data['message'] ?? null,
             'consent' => true,
             'source_url' => $data['source_url'] ?? null,
+            'campaign_id' => isset($data['campaign']) ? Campaign::live()->whereKey($data['campaign'])->value('id') : null,
             'ip_hash' => hash('sha256', $request->ip().config('app.key')),
         ]);
+
+        // Optional opt-in tick box: add to the newsletter list (never without it).
+        if (! empty($data['newsletter'])) {
+            try {
+                Newsletter::subscribe($enquiry->email, $enquiry->name, 'enquiry', $enquiry->id, $enquiry->ip_hash);
+            } catch (\Throwable $e) {
+                Log::error('Newsletter opt-in from enquiry failed', ['enquiry' => $enquiry->id, 'error' => $e->getMessage()]);
+            }
+        }
 
         $to = config('services.enquiries.notify');
         if ($to) {

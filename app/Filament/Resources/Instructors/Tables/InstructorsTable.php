@@ -28,7 +28,6 @@ class InstructorsTable
                 TextColumn::make('category.name')
                     ->searchable(),
                 TextColumn::make('sort')
-                    ->numeric()
                     ->sortable(),
                 IconColumn::make('is_published')
                     ->boolean(),

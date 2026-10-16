@@ -1,0 +1,31 @@
+# Uploaded files (served at /storage/ through the public/storage link).
+# Only images and documents are served; scripts never run here.
+
+Options -Indexes -ExecCGI
+
+# Never execute or serve server-side scripts, even if one is uploaded
+<FilesMatch "\.(php\d?|phtml|phar|pht|pl|py|cgi|sh|asp|aspx|jsp|htm|html|shtml|svgz?|js)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox"
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+</IfModule>

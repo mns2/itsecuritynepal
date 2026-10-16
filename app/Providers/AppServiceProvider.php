@@ -34,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
             Limit::perDay(20)->by($request->ip()),
         ]);
 
+        RateLimiter::for('newsletter', fn (Request $request) => [
+            Limit::perMinute(5)->by($request->ip()),
+            Limit::perDay(20)->by($request->ip()),
+        ]);
+
         // Navigation caches are refreshed whenever catalogue data changes in the admin panel.
         foreach ([Category::class, Course::class, Batch::class] as $model) {
             $model::saved(fn () => Cache::forget('nav.categories') || true);

@@ -47,8 +47,8 @@ document.addEventListener('alpine:init', () => {
   }));
 
   /* ---------- Enquiry form: client-side validation + real submit (POST /enquiries, CSRF, server validation) ---------- */
-  Alpine.data('enquiryForm', (defaultCourse = '', corporate = false, audience = 'Individual') => ({
-    form: { name: '', phone: '', email: '', course: defaultCourse, mode: 'Classroom', audience, message: '', consent: false, org: '', size: corporate ? '1–5' : '2–5 people' },
+  Alpine.data('enquiryForm', (defaultCourse = '', corporate = false, audience = 'Individual', campaign = '') => ({
+    form: { name: '', phone: '', email: '', course: defaultCourse, mode: 'Classroom', audience, message: '', consent: false, org: '', campaign, newsletter: false, size: corporate ? '1–5' : '2–5 people' },
     errors: {}, state: 'idle', submitted: false,
     rules: {
       name: (v) => (v.length < 2 ? 'Please enter your full name.' : ''),
@@ -90,10 +90,11 @@ document.addEventListener('alpine:init', () => {
         this.state = 'error';
       }
       if (this.state !== 'success') return;
+      if (this.form.campaign) { try { localStorage.setItem(`itsn-lead-campaign-${this.form.campaign}`, '1'); } catch (e) {} }
       window.dispatchEvent(new CustomEvent('itsn:track', { detail: { event: 'enquiry_submit', course: this.form.course, audience: corporate ? 'Corporate' : this.form.audience } }));
     },
     reset() {
-      this.form = { ...this.form, name: '', phone: '', email: '', message: '', consent: false };
+      this.form = { ...this.form, name: '', phone: '', email: '', message: '', consent: false, newsletter: false };
       this.errors = {}; this.state = 'idle'; this.submitted = false;
     },
   }));
@@ -227,6 +228,120 @@ document.addEventListener('alpine:init', () => {
       this.results = slugs.map((s, i) => ({ ...bySlug[s], why: i === 0 ? 'Best next step for you' : 'Good follow-on' })).filter((c) => c.slug);
       this.loading = false;
       window.dispatchEvent(new CustomEvent('itsn:track', { detail: { event: 'course_finder_complete', interest: this.answers.interest } }));
+    },
+  }));
+
+  /* ---------- Site pop-ups: campaign offer, Course Finder prompt, newsletter sign-up ----------
+     All share one coordinator: at most one pop-up per page view, never on top of the enquiry form,
+     and each respects its own "how often" setting (stored only in this browser). */
+  const popupStore = {
+    get(key, session) { try { return (session ? sessionStorage : localStorage).getItem(key); } catch (e) { return null; } },
+    set(key, value, session) { try { (session ? sessionStorage : localStorage).setItem(key, value); } catch (e) {} },
+  };
+  window.itsnPopups = window.itsnPopups || { shown: false, eligible: [] };
+
+  Alpine.data('sitePopup', (cfg) => ({
+    open: false,
+    init() {
+      if (!cfg.preview) {
+        if (this.seenRecently() || popupStore.get(cfg.leadKey || `itsn-lead-${cfg.key}`)) return;
+        const mobile = window.matchMedia('(max-width: 767px)').matches;
+        if ((cfg.device === 'mobile' && !mobile) || (cfg.device === 'desktop' && mobile)) return;
+      }
+      // Higher-priority pop-ups that will appear on this page make lower ones wait for a later page view
+      // (exit-intent pop-ups may never fire, so they do not block others).
+      if (!cfg.preview && cfg.trigger !== 'exit') window.itsnPopups.eligible.push(cfg.priority || 0);
+      const go = () => this.show();
+      if (cfg.preview) { setTimeout(go, 400); return; }
+      const touch = window.matchMedia('(hover: none)').matches;
+      if (cfg.trigger === 'scroll' || (cfg.trigger === 'exit' && touch)) {
+        const pct = cfg.trigger === 'scroll' ? cfg.scroll : 50;
+        const onScroll = () => {
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          if (max <= 0 || (window.scrollY / max) * 100 >= pct) { window.removeEventListener('scroll', onScroll); go(); }
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+      } else if (cfg.trigger === 'exit') {
+        const onOut = (e) => { if (e.clientY <= 0 && !e.relatedTarget) { document.removeEventListener('mouseout', onOut); go(); } };
+        document.addEventListener('mouseout', onOut);
+      } else {
+        setTimeout(go, (cfg.delay ?? 5) * 1000);
+      }
+    },
+    seenRecently() {
+      if (cfg.frequency === 'always') return false;
+      if (cfg.frequency === 'session') return !!popupStore.get(cfg.key, true);
+      const at = Number(popupStore.get(cfg.key) || 0);
+      const days = cfg.frequency === 'week' ? 7 : (cfg.frequency === 'month' ? 30 : 1);
+      return at && Date.now() - at < days * 864e5;
+    },
+    remember() { popupStore.set(cfg.key, String(Date.now())); popupStore.set(cfg.key, '1', true); },
+    enquiryOpen() { const d = document.querySelector('[data-enquiry-dialog]'); return d && d.style.display !== 'none'; },
+    show() {
+      if (this.open) return;
+      if (!cfg.preview && window.itsnPopups.shown) return; // another pop-up already used this page view
+      if (!cfg.preview && window.itsnPopups.eligible.some((p) => p > (cfg.priority || 0))) return;
+      if (this.enquiryOpen()) { setTimeout(() => this.show(), 5000); return; }
+      window.itsnPopups.shown = true;
+      this.open = true;
+      this.remember();
+      this.track('view');
+    },
+    close() { this.open = false; this.remember(); },
+    /** Button that opens the enquiry form (campaigns) */
+    cta() {
+      this.track('click');
+      this.close();
+      if (cfg.action === 'enquiry') this.$dispatch('open-enquiry', { course: cfg.course || undefined, campaign: cfg.id });
+    },
+    track(event) {
+      window.dispatchEvent(new CustomEvent('itsn:track', { detail: { event: `popup_${event}`, popup: cfg.key } }));
+      if (cfg.preview || !cfg.trackUrl) return;
+      const body = new FormData(); body.append('_token', cfg.token); body.append('event', event);
+      fetch(cfg.trackUrl, { method: 'POST', body, keepalive: true, headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } }).catch(() => {});
+    },
+    /** Never show again after the visitor acted on it (e.g. subscribed) */
+    done() { popupStore.set(cfg.leadKey || `itsn-lead-${cfg.key}`, '1'); },
+  }));
+
+  Alpine.data('newsletterForm', () => ({
+    email: '', consent: false, state: 'idle', error: '', message: '',
+    async submit() {
+      this.error = '';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(this.email)) { this.error = 'Enter a valid email address, e.g. name@example.com.'; return; }
+      if (!this.consent) { this.error = 'Please tick the box so we can email you.'; return; }
+      this.state = 'loading';
+      try {
+        const res = await fetch(this.$el.action, { method: 'POST', body: new FormData(this.$el), headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 422) { this.error = Object.values(data.errors || {})[0]?.[0] || 'Please check your email address.'; this.state = 'idle'; return; }
+        if (!res.ok) { this.error = res.status === 429 ? 'Too many attempts. Please try again later.' : 'Something went wrong. Please try again.'; this.state = 'idle'; return; }
+        this.message = data.message; this.state = 'success';
+        window.dispatchEvent(new CustomEvent('newsletter-subscribed'));
+        window.dispatchEvent(new CustomEvent('itsn:track', { detail: { event: 'newsletter_signup' } }));
+      } catch (e) { this.error = 'Something went wrong. Please try again.'; this.state = 'idle'; }
+    },
+  }));
+
+  Alpine.data('countdown', (endsAt) => ({
+    left: null, timer: null,
+    init() {
+      const update = () => {
+        const ms = new Date(endsAt) - Date.now();
+        if (ms <= 0) { this.left = null; clearInterval(this.timer); return; }
+        const s = Math.floor(ms / 1000);
+        this.left = { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60), s: s % 60 };
+      };
+      update();
+      this.timer = setInterval(update, 1000);
+    },
+    destroy() { clearInterval(this.timer); },
+  }));
+
+  Alpine.data('copyCode', (code) => ({
+    copied: false,
+    async copy() {
+      try { await navigator.clipboard.writeText(code); this.copied = true; setTimeout(() => (this.copied = false), 2000); } catch (e) {}
     },
   }));
 

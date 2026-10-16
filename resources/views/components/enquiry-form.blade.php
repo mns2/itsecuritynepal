@@ -1,6 +1,6 @@
 {{-- Enquiry form. Works without JS (normal POST + redirect back) and with JS (Alpine: inline validation + fetch).
      Spam protection: CSRF, honeypot field, minimum fill time (signed timestamp), rate limiting (see AppServiceProvider). --}}
-@props(['id' => 'enquiry', 'compact' => false, 'defaultCourse' => '', 'title' => null, 'corporate' => false, 'audience' => 'Individual', 'form' => null])
+@props(['id' => 'enquiry', 'compact' => false, 'defaultCourse' => '', 'title' => null, 'corporate' => false, 'audience' => 'Individual', 'form' => null, 'campaign' => null])
 @php
     $formType = $form ?? ($corporate ? 'corporate' : ($audience === 'Group' ? 'group' : 'course'));
     $span = $compact ? '' : 'sm:col-span-2';
@@ -10,11 +10,12 @@
     $errors = $errors ?? new \Illuminate\Support\ViewErrorBag; // e.g. on error pages rendered outside the web middleware
 @endphp
 <form id="{{ $id }}" action="{{ route('enquiries.store') }}" method="post" class="grid gap-4" novalidate
-      x-data="enquiryForm('{{ old('course', $defaultCourse) }}', {{ $corporate ? 'true' : 'false' }}, '{{ $audience }}')" @submit.prevent="submit"
-      @open-enquiry.window="if ($event.detail.course) form.course = $event.detail.course; if ($event.detail.audience) form.audience = $event.detail.audience">
+      x-data="enquiryForm('{{ old('course', $defaultCourse) }}', {{ $corporate ? 'true' : 'false' }}, '{{ $audience }}', '{{ $campaign }}')" @submit.prevent="submit"
+      @open-enquiry.window="if ($event.detail.course) form.course = $event.detail.course; if ($event.detail.audience) form.audience = $event.detail.audience; form.campaign = $event.detail.campaign || '{{ $campaign }}'">
     @csrf
     <input type="hidden" name="form" value="{{ $formType }}">
     <input type="hidden" name="source_url" value="{{ url()->current() }}">
+    <input type="hidden" name="campaign" x-model="form.campaign">
     <input type="hidden" name="issued" value="{{ $issued }}">
     <div class="absolute -left-[9999px]" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 
@@ -136,6 +137,10 @@
                     <span>I agree that IT Security Nepal may contact me about this enquiry, as described in the <a href="/privacy-policy/">Privacy Policy</a>.</span>
                 </label>
                 <p id="{{ $id }}-consent-err" class="field-error" x-show="errors.consent" x-cloak><x-icon name="circle-alert" class="size-4" /><span x-text="errors.consent"></span></p>
+                <label class="mt-2.5 flex items-start gap-3 text-sm text-ink-muted">
+                    <input type="checkbox" name="newsletter" value="1" class="check mt-0.5" x-model="form.newsletter" @checked(old('newsletter'))>
+                    <span>Also email me new batch dates, scholarships and offers (optional, unsubscribe any time).</span>
+                </label>
             </div>
         </div>
         <button type="submit" class="btn btn-primary btn-lg btn-block" :aria-busy="state === 'loading'">

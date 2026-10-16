@@ -29,16 +29,20 @@ class TrainingClassesTable
                 TextColumn::make('trainer')->toggleable()->placeholder('—'),
                 TextColumn::make('starts_on')->label('Starts')->date('j M Y')->sortable(),
                 TextColumn::make('ends_on')->label('Ends')->date('j M Y')->sortable()->placeholder('—'),
-                TextColumn::make('studying_count')->label('Studying')->numeric()->alignCenter()
+                TextColumn::make('studying_count')->label('Studying')->alignCenter()
                     ->description(fn (TrainingClass $r) => $r->capacity ? "of {$r->capacity} seats" : null),
-                TextColumn::make('completed_count')->label('Completed')->numeric()->alignCenter(),
+                TextColumn::make('completed_count')->label('Completed')->alignCenter(),
                 SelectColumn::make('status')->options(TrainingClass::STATUSES)->selectablePlaceholder(false),
             ])
             ->filters([
                 SelectFilter::make('status')->options(TrainingClass::STATUSES),
                 SelectFilter::make('course')->relationship('course', 'name')->searchable()->preload(),
             ])
-            ->recordActions([EditAction::make()])
+            ->recordActions([
+                \Filament\Actions\Action::make('register')->label('Register')->icon('heroicon-o-table-cells')->color('gray')
+                    ->url(fn (TrainingClass $r) => \App\Filament\Pages\AttendanceRegister::getUrl(['class' => $r->id])),
+                EditAction::make(),
+            ])
             ->toolbarActions([BulkActionGroup::make([DeleteBulkAction::make()])])
             ->emptyStateHeading('No classes yet')
             ->emptyStateDescription('Add each running class here to see ongoing classes and student numbers on the dashboard.');

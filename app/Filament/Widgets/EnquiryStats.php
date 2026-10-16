@@ -15,6 +15,11 @@ use Illuminate\Support\Carbon;
 /** Dashboard headline numbers: classes, students, completions, leads. */
 class EnquiryStats extends StatsOverviewWidget
 {
+    public static function canView(): bool
+    {
+        return \App\Support\Access::allows('leads');
+    }
+
     protected static ?int $sort = 1;
 
     protected static bool $isLazy = false;

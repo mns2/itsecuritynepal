@@ -29,7 +29,7 @@ class StudentForm
                     TextInput::make('email')->email()->maxLength(160),
                     $inClass ? null : Select::make('course_id')->label('Course')->relationship('course', 'name')->searchable()->preload()->required()
                         ->getOptionLabelFromRecordUsing(fn (Course $c) => "{$c->code} · {$c->name}")->live()->columnSpan(2),
-                    $inClass ? null : Select::make('training_class_id')->label('Class')->searchable()->native(false)
+                    $inClass ? null : Select::make('training_class_id')->label('Batch / class')->searchable()->native(false)
                         ->options(fn (Get $get) => TrainingClass::query()->when($get('course_id'), fn ($q, $id) => $q->where('course_id', $id))
                             ->whereIn('status', ['upcoming', 'ongoing'])->orderByDesc('starts_on')->pluck('name', 'id'))
                         ->helperText('Optional: the running class they attend.'),
@@ -45,6 +45,7 @@ class StudentForm
                 ]),
                 Textarea::make('notes')->rows(2),
             ]),
+            FeeFields::section(),
         ];
     }
 }

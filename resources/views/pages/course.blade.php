@@ -198,6 +198,8 @@
     </div>
 </div>
 
+@if (\App\Support\GoogleReviews::settings()['show_course'])<x-google-reviews />@endif
+
 @if ($related->isNotEmpty())
 <section class="section bg-surface" aria-labelledby="h-related">
     <div class="container-page">

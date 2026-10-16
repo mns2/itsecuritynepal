@@ -58,10 +58,24 @@ if (-not (Test-Path (Join-Path $stage 'public\build\manifest.json'))) { throw 'p
 if (Test-Path (Join-Path $stage 'public\hot')) { throw 'public/hot must not be shipped' }
 
 Step 'Creating zip'
-# Windows tar (bsdtar) writes forward-slash paths; Compress-Archive in PowerShell 5 writes backslashes,
-# which Linux / cPanel unzip turns into broken file names.
-Push-Location $stage
-try { Run "$env:SystemRoot\System32\tar.exe" @('-a', '-c', '-f', $zip, '*') } finally { Pop-Location }
+# Written entry by entry with forward-slash paths (Compress-Archive in PowerShell 5 writes backslashes,
+# which Linux / cPanel unzip turns into broken file names).
+# Not tar.exe: it stores Windows files as 777/666 (world-writable), and LiteSpeed / suPHP refuse to run
+# such PHP files, so every page returns 403. Entries written here carry no Unix mode, so the server's
+# unzip applies its normal defaults (folders 755, files 644).
+Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
+$archive = [System.IO.Compression.ZipFile]::Open($zip, [System.IO.Compression.ZipArchiveMode]::Create)
+try {
+    $prefix = $stage.TrimEnd('\').Length + 1
+    foreach ($item in Get-ChildItem $stage -Recurse -Force) {
+        $name = $item.FullName.Substring($prefix).Replace('\', '/')
+        if ($item.PSIsContainer) {
+            [void]$archive.CreateEntry("$name/")
+        } else {
+            [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $item.FullName, $name, [System.IO.Compression.CompressionLevel]::Optimal)
+        }
+    }
+} finally { $archive.Dispose() }
 Remove-Item $stage -Recurse -Force
 $size = '{0:N1} MB' -f ((Get-Item $zip).Length / 1MB)
 Write-Host "`nRelease ready: $zip ($size)" -ForegroundColor Green
