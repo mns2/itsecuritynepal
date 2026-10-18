@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', $course->seoTitle())
 @section('description', $course->meta_description ?: \Illuminate\Support\Str::limit($course->summary, 155))
+@section('og_image_path', $course->image ?: $course->category?->image)
 
 @php
     $contact = $site['contact'] ?? [];
@@ -8,7 +9,6 @@
     $modes = $course->modes ?? [];
     $waText = 'Hello, I would like to know about the '.$course->name.' course.';
     $courseLd = array_filter([
-        '@context' => 'https://schema.org',
         '@type' => 'Course',
         'name' => $course->name,
         'description' => $course->summary,
@@ -16,11 +16,15 @@
         'url' => rtrim(config('app.url'), '/').$course->url(),
         'educationalLevel' => $course->level,
         'provider' => ['@type' => 'EducationalOrganization', '@id' => rtrim(config('app.url'), '/').'/#organization', 'name' => $site['brand']['name'] ?? 'IT Security Nepal'],
+        'image' => \App\Support\OgImage::url($course->image ?: $course->category?->image),
+        'coursePrerequisites' => $course->prerequisites ? array_values($course->prerequisites) : null,
+        'teaches' => $course->outcomes ? array_values($course->outcomes) : null,
+        'about' => $course->certification ? ['@type' => 'Thing', 'name' => $course->certification] : null,
         'hasCourseInstance' => collect($modes)->map(fn ($m) => ['@type' => 'CourseInstance', 'courseMode' => $m === 'Live Online' ? 'online' : 'onsite', 'location' => $m === 'Live Online' ? null : 'New Baneshwor, Kathmandu'])->map(fn ($i) => array_filter($i))->values()->all(),
     ]);
 @endphp
 @push('head')
-<script type="application/ld+json">{!! json_encode($courseLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+<script type="application/ld+json">{!! \App\Support\Seo::jsonLd($courseLd) !!}</script>
 @endpush
 
 @section('content')

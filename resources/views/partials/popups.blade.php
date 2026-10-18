@@ -2,7 +2,8 @@
      campaign first, then Course Finder, then newsletter. --}}
 @php
     $popups = \App\Support\Popups::settings();
-    $isAdminPath = request()->is('admin', 'admin/*');
+    // No pop-ups over admin screens or the exam booking/payment flow.
+    $isAdminPath = request()->is('admin', 'admin/*', 'red-hat-exam-booking-nepal', 'red-hat-exam-booking-nepal/*');
     $isPreview = request()->filled('campaign_preview') && auth()->check();
 @endphp
 @unless ($isAdminPath)

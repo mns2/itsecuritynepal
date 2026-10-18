@@ -30,6 +30,20 @@ class GuardPublicHost
                 self::warnDaily('app_url', "APP_URL points to localhost on a public server; using {$root}. Set APP_URL={$root} in .env, then run: php artisan optimize");
             }
 
+            // Main domain served with a staging APP_URL (e.g. https://new.itsecuritynepal.com): canonicals, sitemap and
+            // structured data must name the main domain, or search engines are sent to the staging copy.
+            $primary = (string) config('seo.primary_host');
+            if ($primary !== '' && strcasecmp($request->getHost(), $primary) === 0
+                && strcasecmp((string) parse_url((string) config('app.url'), PHP_URL_HOST), $primary) !== 0) {
+                $root = 'https://'.strtolower($primary);
+                $configured = (string) config('app.url');
+                config(['app.url' => $root, 'filesystems.disks.public.url' => $root.'/storage']);
+                app('filesystem')->forgetDisk('public');
+                URL::forceRootUrl($root);
+                URL::forceScheme('https');
+                self::warnDaily('app_url_primary', "Main domain served with APP_URL={$configured}; using {$root}. Set APP_URL={$root} and APP_ENV=production in .env, then run: php artisan optimize");
+            }
+
             if (config('app.debug') && ! config('app.allow_public_debug')) {
                 config(['app.debug' => false]);
                 self::warnDaily('app_debug', 'APP_DEBUG=true on a public server; debug pages were disabled. Set APP_DEBUG=false in .env, then run: php artisan optimize');

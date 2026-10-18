@@ -1,6 +1,7 @@
 @extends('layouts.app')
-@section('title', 'IT Career Pathways in Nepal: Linux, Cybersecurity, Networking, DevOps & Cloud | IT Security Nepal')
-@section('description', 'Step-by-step IT career pathways: which courses to take, in what order, the skills you build and the jobs they lead to. Linux, cybersecurity, networking, DevOps and Azure cloud.')
+@section('schema_type', 'CollectionPage')
+@section('title', 'IT Career Pathways in Nepal: Linux, Security, DevOps, Cloud')
+@section('description', 'Step-by-step IT career pathways in Nepal: which courses to take, in what order, and the jobs they lead to in Linux, cybersecurity, networking, DevOps and cloud.')
 
 @section('content')
 <section class="bg-grid-light">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', $page->title.' | IT Security Nepal')
-@section('description', $page->meta_description ?: $page->title.' for itsecuritynepal.com.')
+@section('description', $page->meta_description ?: $page->title.' of IT Security Nepal, New Baneshwor, Kathmandu, covering itsecuritynepal.com and our IT training services.')
 {{-- Until approved legal text is entered in the admin panel, the page is kept out of search results. --}}
 @if (blank($page->body))
     @section('noindex', '1')

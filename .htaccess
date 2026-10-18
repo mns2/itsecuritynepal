@@ -15,6 +15,20 @@ Options -Indexes -MultiViews
     # Allow SSL certificate validation
     RewriteRule ^\.well-known/ - [L]
 
+    # Canonical host and HTTPS in one hop, BEFORE the request is handed to public/.
+    # (If public/.htaccess did this after the hand-off, %{REQUEST_URI} would already be /public/…
+    #  and visitors and Google would be redirected to https://itsecuritynepal.com/public/.)
+    RewriteCond %{HTTP_HOST} ^www\.itsecuritynepal\.com$ [NC]
+    RewriteRule ^(.*)$ https://itsecuritynepal.com/$1 [L,R=301]
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
+
+    # Someone (or an old redirect) asked for /public/… directly: send them to the clean URL.
+    # THE_REQUEST is the browser's original request line, so the internal hand-off below never matches.
+    RewriteCond %{THE_REQUEST} \s/public(/|\s|\?)
+    RewriteRule ^public/?(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
+
     # Everything else goes through public/
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]

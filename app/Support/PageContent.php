@@ -134,8 +134,8 @@ class PageContent
 
             'home' => [
                 'seo' => [
-                    'title' => 'IT Training Institute in Kathmandu | Red Hat, Cybersecurity, CCNA & DevOps | IT Security Nepal',
-                    'description' => 'Hands-on IT training in Kathmandu from a Red Hat Authorized Training Partner. RHCSA, RHCE, ethical hacking, CCNA, Kubernetes and Azure courses for individuals, groups and corporate batches: classroom or live online.',
+                    'title' => 'IT Security Nepal: Red Hat, Linux & Cybersecurity Training',
+                    'description' => 'Hands-on IT training in Kathmandu from a Red Hat Authorized Training Partner: RHCSA, RHCE, ethical hacking, CCNA, Kubernetes and Azure, in class or live online.',
                 ],
                 'hero' => [
                     'badge' => 'Red Hat Authorized Training Partner · 15+ years',
@@ -252,8 +252,8 @@ class PageContent
 
             'about' => [
                 'seo' => [
-                    'title' => 'About IT Security Nepal | Red Hat Authorized Training Partner in Kathmandu',
-                    'description' => 'I.T. Security College of Computer Studies: a Kathmandu IT training institute and Red Hat Authorized Training Partner for 15+ years, specialising in cybersecurity, networking, cloud and Linux.',
+                    'title' => 'About IT Security Nepal: IT Training Institute in Kathmandu',
+                    'description' => 'I.T. Security College of Computer Studies: a Red Hat Authorized Training Partner in Kathmandu for 15+ years, teaching cybersecurity, networking, cloud and Linux.',
                 ],
                 'eyebrow' => 'About IT Security Nepal',
                 'title' => "Nepal's specialist institute for cybersecurity, network and system training",
@@ -333,8 +333,8 @@ class PageContent
 
             'corporate' => [
                 'seo' => [
-                    'title' => 'Corporate IT Training in Nepal | Cybersecurity, DevOps & Cloud | IT Security Nepal',
-                    'description' => 'Customised corporate IT training for organisations in Nepal: cybersecurity, DevOps, cloud and infrastructure programmes delivered on-site, at our Kathmandu centre or online.',
+                    'title' => 'Corporate IT Training in Nepal: Cybersecurity, DevOps, Cloud',
+                    'description' => 'Customised IT training for organisations in Nepal: cybersecurity, DevOps, cloud and infrastructure, delivered on-site, at our Kathmandu centre or online.',
                 ],
                 'eyebrow' => 'For organisations',
                 'title' => 'Corporate IT training that strengthens your whole team',

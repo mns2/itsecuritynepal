@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('schema_type', 'CollectionPage')
 @section('title', 'IT Career & Certification Guides | Blog | IT Security Nepal')
 @section('description', 'Guides on RHCSA, RHCE, cybersecurity careers, Linux and IT certifications in Nepal, plus news and offers from IT Security Nepal.')
 

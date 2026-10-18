@@ -21,7 +21,9 @@
             <p class="mt-4 text-[0.9375rem] leading-relaxed">{{ content('global.footer_text') }}</p>
             <ul class="mt-5 flex gap-2" aria-label="Social media">
                 @foreach ($site['social'] ?? [] as $s)
-                    <li><a href="{{ $s['url'] }}" class="flex size-11 items-center justify-center rounded-md bg-white/10 text-white hover:bg-sun-400 hover:text-navy-700" rel="noopener" target="_blank"><x-icon :name="$s['icon']" class="size-5" /><span class="sr-only">{{ $s['name'] }} (opens in a new tab)</span></a></li>
+                    {{-- A WhatsApp icon always opens a chat with the WhatsApp number from Site settings → Contact. --}}
+                    @php($href = strtolower($s['icon'] ?? '') === 'whatsapp' && ! empty($site['contact']['whatsapp']['number']) ? 'https://wa.me/'.$site['contact']['whatsapp']['number'] : $s['url'])
+                    <li><a href="{{ $href }}" class="flex size-11 items-center justify-center rounded-md bg-white/10 text-white hover:bg-sun-400 hover:text-navy-700" rel="noopener" target="_blank"><x-icon :name="$s['icon']" class="size-5" /><span class="sr-only">{{ $s['name'] }} (opens in a new tab)</span></a></li>
                 @endforeach
             </ul>
         </div>

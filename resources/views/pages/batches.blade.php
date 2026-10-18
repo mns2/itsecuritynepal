@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('schema_type', 'CollectionPage')
 @section('title', 'Upcoming Training Batches & Schedule | IT Security Nepal')
 @section('description', 'Upcoming IT training batches at IT Security Nepal in Kathmandu: Linux Bootcamp, RHCSA, DevOps, ethical hacking and more. Check schedules and reserve a seat.')
 

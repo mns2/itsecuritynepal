@@ -3,7 +3,7 @@
 @php
     $base = rtrim(config('app.url'), '/');
     $all = array_merge([['name' => 'Home', 'url' => '/']], $items);
-    $ld = ['@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => collect($all)->values()->map(fn ($it, $i) => array_filter([
+    $ld = ['@type' => 'BreadcrumbList', 'itemListElement' => collect($all)->values()->map(fn ($it, $i) => array_filter([
         '@type' => 'ListItem', 'position' => $i + 1, 'name' => $it['name'],
         'item' => isset($it['url']) ? $base.$it['url'] : $base.'/'.ltrim(rtrim(request()->path(), '/').'/', '/'),
     ]))->all()];
@@ -24,5 +24,5 @@
     </ol>
 </nav>
 @push('head')
-<script type="application/ld+json">{!! json_encode($ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+<script type="application/ld+json">{!! \App\Support\Seo::jsonLd($ld) !!}</script>
 @endpush

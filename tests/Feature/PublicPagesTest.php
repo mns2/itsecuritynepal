@@ -52,9 +52,9 @@ class PublicPagesTest extends TestCase
     public function test_course_page_has_course_and_faq_structured_data(): void
     {
         $html = $this->get('/red-hat-system-administration/')->assertOk()->getContent();
-        $this->assertStringContainsString('"@type":"Course"', $html);
-        $this->assertStringContainsString('"@type":"FAQPage"', $html);
-        $this->assertStringContainsString('"@type":"BreadcrumbList"', $html);
+        $this->assertStringContainsString('"@type": "Course"', $html);
+        $this->assertStringContainsString('"@type": "FAQPage"', $html);
+        $this->assertStringContainsString('"@type": "BreadcrumbList"', $html);
         $this->assertStringContainsString('RH124: Red Hat System Administration I Course in Nepal', $html);
     }
 

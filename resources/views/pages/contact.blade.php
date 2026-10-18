@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @php $contact = $site['contact'] ?? []; @endphp
+@section('schema_type', 'ContactPage')
 @section('title', 'Contact IT Security Nepal | New Baneshwor, Kathmandu')
-@section('description', 'Contact IT Security Nepal in New Baneshwor, Kathmandu. Call '.($contact['phonePrimary']['label'] ?? '').', email '.($contact['email'] ?? '').' or send an enquiry. Open '.($contact['hours'] ?? '').'.')
+@section('description', 'Contact IT Security Nepal in New Baneshwor, Kathmandu. Call '.($contact['phonePrimary']['label'] ?? '').', email '.($contact['email'] ?? '').' or send a course enquiry.')
 
 @section('content')
 <section class="bg-grid-light">
@@ -69,7 +70,4 @@
 </section>
 @endif
 
-@push('head')
-<script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@type' => 'ContactPage', 'name' => 'Contact IT Security Nepal', 'about' => ['@id' => rtrim(config('app.url'), '/').'/#organization']], JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
-@endpush
 @endsection

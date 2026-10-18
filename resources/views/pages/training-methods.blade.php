@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Training Methods: Classroom, Live Online & One-on-One | IT Security Nepal')
-@section('description', 'Learn your way at IT Security Nepal: classroom training in Kathmandu, live virtual training, one-on-one sessions and flip classes, for individuals, groups and corporate batches.')
+@section('description', 'Classroom training in Kathmandu, live virtual classes, one-on-one sessions and flip classes at IT Security Nepal, for individuals, groups and corporate batches.')
 
 @section('content')
 <section class="bg-grid-light">

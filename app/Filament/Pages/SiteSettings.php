@@ -47,11 +47,11 @@ class SiteSettings extends Page
 
     public ?array $data = [];
 
-    private const KEYS = ['announcement', 'contact', 'social', 'trust', 'audiences', 'analytics', 'popups', 'reviews'];
+    private const KEYS = ['announcement', 'contact', 'social', 'trust', 'audiences', 'analytics', 'popups', 'reviews', 'exam_booking'];
 
     public function mount(): void
     {
-        $this->form->fill(collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => match ($k) { 'popups' => Popups::settings(), 'reviews' => GoogleReviews::settings(), default => Setting::get($k, []) }])->all());
+        $this->form->fill(collect(self::KEYS)->mapWithKeys(fn ($k) => [$k => match ($k) { 'popups' => Popups::settings(), 'reviews' => GoogleReviews::settings(), 'exam_booking' => \App\Models\ExamBooking::settings(), default => Setting::get($k, []) }])->all());
     }
 
     public function form(Schema $schema): Schema
@@ -199,6 +199,25 @@ class SiteSettings extends Page
                                 }),
                         ]),
                     ]),
+                ]),
+                // Admin-only on purpose: whoever can change the payment QR controls where candidates send money.
+                Tab::make('Exam booking')->icon('heroicon-o-ticket')->schema([
+                    Toggle::make('exam_booking.enabled')->label('Accept online Red Hat exam bookings')
+                        ->helperText('The form at /red-hat-exam-booking-nepal/ opens only when this is on AND a payment QR code is uploaded.'),
+                    Grid::make(2)->schema([
+                        TextInput::make('exam_booking.fee_npr')->label('Booking fee (NPR, per exam)')->numeric()->minValue(1)->required(),
+                        TextInput::make('exam_booking.payee_note')->label('Text under the QR (optional)')->maxLength(120)
+                            ->helperText('e.g. the account name exactly as it appears when scanning. Leave empty if unsure.'),
+                    ]),
+                    FileUpload::make('exam_booking.qr_image')->label('Official payment QR code')->image()->disk('public')->directory('payment')
+                        ->maxSize(2048)->imagePreviewHeight('220')->hintIcon('heroicon-m-qr-code')->hint('Original PNG/JPG from the bank or wallet app, at least 600 × 600 px')
+                        ->helperText('Upload the original file (not a photo of a printout). Scan it with a phone after saving to check it opens the right account.'),
+                    Repeater::make('exam_booking.exams')->label('Exams on the form')->reorderable()->defaultItems(0)->columns(2)
+                        ->schema([
+                            TextInput::make('name')->required()->maxLength(120)->placeholder('RHCSA: Red Hat Certified System Administrator'),
+                            TextInput::make('code')->label('Exam code (optional)')->maxLength(20)->placeholder('EX200'),
+                        ])
+                        ->helperText('Changing a name does not change bookings already received.'),
                 ]),
                 Tab::make('Analytics')->icon('heroicon-o-presentation-chart-line')->schema([
                     TextInput::make('analytics.ga4_id')->label('Google Analytics 4 measurement ID')->placeholder('G-XXXXXXXXXX')

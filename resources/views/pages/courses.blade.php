@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('schema_type', 'CollectionPage')
 @section('title', 'IT Courses & Certification Training in Nepal | IT Security Nepal')
 @section('description', 'Browse '.$courses->count().' hands-on IT courses in Kathmandu: Red Hat RHCSA/RHCE, ethical hacking, CCNA, Kubernetes, Azure, CompTIA and ISC2. Filter by track, level and training mode.')
 

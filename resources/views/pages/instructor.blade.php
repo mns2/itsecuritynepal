@@ -3,7 +3,7 @@
 @section('description', \Illuminate\Support\Str::limit((string) $instructor->bio, 155))
 
 @push('head')
-<script type="application/ld+json">{!! json_encode(array_filter(['@context' => 'https://schema.org', '@type' => 'Person', 'name' => $instructor->name, 'jobTitle' => $instructor->role, 'description' => $instructor->bio, 'worksFor' => ['@id' => rtrim(config('app.url'), '/').'/#organization'], 'sameAs' => array_filter([$instructor->linkedin_url])]), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+<script type="application/ld+json">{!! \App\Support\Seo::jsonLd(array_filter(['@type' => 'Person', 'name' => $instructor->name, 'jobTitle' => $instructor->role, 'description' => $instructor->bio, 'worksFor' => ['@id' => rtrim(config('app.url'), '/').'/#organization'], 'sameAs' => array_filter([$instructor->linkedin_url])])) !!}</script>
 @endpush
 
 @section('content')

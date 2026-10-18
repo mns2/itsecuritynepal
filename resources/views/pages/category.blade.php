@@ -1,6 +1,8 @@
 @extends('layouts.app')
+@section('schema_type', 'CollectionPage')
 @section('title', $category->meta_title ?: $category->name.' Training in Kathmandu, Nepal | IT Security Nepal')
 @section('description', $category->meta_description ?: \Illuminate\Support\Str::limit($category->intro, 155))
+@section('og_image_path', $category->image)
 
 @section('content')
 <section class="relative overflow-hidden bg-grid-light">
@@ -40,6 +42,13 @@
                 </ul>
             @endif
         @endforeach
+        @if ($category->key === 'redhat')
+            <a href="{{ route('exam-booking') }}/" class="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-line bg-sun-50 p-5 hover:border-sun-400">
+                <span class="flex items-center gap-3"><span class="ic-tile"><x-icon name="badge-check" class="size-5" /></span>
+                    <span><span class="block font-display font-bold text-navy-700">Ready for the exam? Book your Red Hat exam in Nepal</span><span class="text-sm text-ink-muted">RHCSA, RHCE and more. Pay by QR and send your details online.</span></span></span>
+                <span class="link-arrow">Book an exam <x-icon name="arrow-right" class="size-4" /></span>
+            </a>
+        @endif
     </div>
 </section>
 

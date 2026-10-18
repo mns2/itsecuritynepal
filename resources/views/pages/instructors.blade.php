@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('schema_type', 'CollectionPage')
 @section('title', 'Our Instructors | Certified IT Trainers | IT Security Nepal')
 @section('description', 'Meet the certified instructors who teach Red Hat, cybersecurity, networking, cloud and DevOps courses at IT Security Nepal.')
 

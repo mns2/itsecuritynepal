@@ -3,10 +3,16 @@
     // @section('x', 'value') stores HTML-escaped text; decode once here so {{ }} below escapes exactly once.
     $yield = fn (string $s) => html_entity_decode(trim($__env->yieldContent($s)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $pageTitle = $yield('title') ?: ($brand['name'] ?? 'IT Security Nepal');
+    // Google shows about 60 characters: drop the " | IT Security Nepal" suffix when it would push the title past that
+    // (the brand is still in og:site_name and the WebSite/Organization structured data). Admin → SEO titles are kept as typed.
+    $suffix = ' | '.($brand['name'] ?? 'IT Security Nepal');
+    if (mb_strlen($pageTitle) > 60 && str_ends_with($pageTitle, $suffix)) {
+        $pageTitle = mb_substr($pageTitle, 0, -mb_strlen($suffix));
+    }
     $pageDescription = $yield('description') ?: ($brand['description'] ?? '');
     $canonical = rtrim(config('app.url'), '/').'/'.ltrim(rtrim(request()->path(), '/').'/', '/');
     $canonical = request()->path() === '/' ? rtrim(config('app.url'), '/').'/' : $canonical;
-    $indexable = app()->isProduction() && ! trim($__env->yieldContent('noindex'));
+    $indexable = \App\Support\Seo::indexable() && ! trim($__env->yieldContent('noindex'));
 
     // Advanced SEO (Admin → Content → SEO, or the page's own editor) overrides the page defaults.
     $seo = \App\Support\Seo::current();
@@ -23,7 +29,10 @@
     }
     $ogTitle = $seo?->og_title ?: $pageTitle;
     $ogDescription = $seo?->og_description ?: $pageDescription;
-    $ogImage = media($seo?->og_image) ?: ($yield('og_image') ?: asset('images/og-default.png'));
+    // Share image: Admin → SEO image, else the page's own (og_image URL, or og_image_path = photo on the public disk,
+    // made into a 1200 × 630 JPEG by App\Support\OgImage), else the branded default.
+    $ogImage = media($seo?->og_image) ?: ($yield('og_image') ?: (\App\Support\OgImage::url($yield('og_image_path')) ?: asset('images/og-default.png')));
+    $ogKnownSize = $ogImage === asset('images/og-default.png') || str_contains($ogImage, '/storage/og/');
     $ga = $site['analytics']['ga4_id'] ?? config('services.analytics.ga4');
 @endphp
 <!doctype html>
@@ -42,12 +51,17 @@
     <meta property="og:description" content="{{ \Illuminate\Support\Str::limit($ogDescription, 300, '') }}">
     <meta property="og:url" content="{{ $canonical }}">
     <meta property="og:image" content="{{ $ogImage }}">
+    @if ($ogKnownSize)<meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    @endif<meta property="og:image:alt" content="{{ $ogTitle }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $ogTitle }}">
     <meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit($ogDescription, 200, '') }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
+    <meta name="twitter:image:alt" content="{{ $ogTitle }}">
     <meta name="theme-color" content="#003275">
     <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ $brand['name'] ?? 'IT Security Nepal' }} Blog" href="{{ rtrim(config('app.url'), '/') }}/feed/">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>document.documentElement.classList.replace('no-js','js')</script>
     @include('partials.jsonld-organization')

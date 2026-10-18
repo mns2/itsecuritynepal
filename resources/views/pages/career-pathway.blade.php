@@ -18,7 +18,7 @@
             </div>
         </div>
         @if ($img)
-            <img src="{{ $img }}" alt="" class="aspect-[4/3] w-full rounded-2xl object-cover shadow-panel" fetchpriority="high">
+            <img src="{{ $img }}" alt="{{ media_alt($path->image) }}" class="aspect-[4/3] w-full rounded-2xl object-cover shadow-panel" fetchpriority="high">
         @endif
     </div>
 </section>

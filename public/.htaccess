@@ -28,6 +28,8 @@ AddDefaultCharset UTF-8
     RewriteCond %{HTTPS} !=on
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # (When the domain's document root is the project folder, the root .htaccess has already done the
+    #  two redirects above; these only run when the document root is public/ itself.)
 
     # Hidden files and folders (.env, .git, .user.ini …), except .well-known (SSL validation)
     RewriteRule (^|/)\.(?!well-known/) - [F,L]

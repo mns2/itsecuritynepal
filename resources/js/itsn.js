@@ -99,6 +99,61 @@ document.addEventListener('alpine:init', () => {
     },
   }));
 
+  /* ---------- Red Hat exam booking: inline validation + screenshot preview; submits as a normal multipart POST ---------- */
+  Alpine.data('examBookingForm', () => ({
+    preview: '', fileName: '', fileError: false, sending: false,
+    rules: {
+      name: (el) => (el.value.trim().length < 2 ? 'Please enter your full name.' : ''),
+      phone: (el) => (!/^(\+?977[-\s]?)?(9\d{9}|0\d{1,2}[-\s]?\d{6,7})$/.test(el.value.replace(/[\s-]/g, '')) ? 'Enter a valid Nepali mobile or landline number, e.g. 98XXXXXXXX.' : ''),
+      email: (el) => (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim()) ? 'Enter a valid email address, e.g. name@example.com.' : ''),
+      redhat_login: (el) => (!/^[A-Za-z0-9._@+\-]{2,100}$/.test(el.value.trim()) ? 'Enter your Red Hat login (letters, numbers and . _ - @ + only). Not your password.' : ''),
+      redhat_email: (el) => (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim()) ? 'Enter the email address on your Red Hat account.' : ''),
+      exam: (el) => (!el.value ? 'Choose the exam you want to book.' : ''),
+      transaction_id: (el) => (el.value && !/^[A-Za-z0-9 ._\/#\-]+$/.test(el.value) ? 'Use only letters, numbers, spaces and . _ / # -' : ''),
+      confirm: (el) => (!el.checked ? 'Please confirm your details are correct.' : ''),
+    },
+    show(id, msg) {
+      const input = document.getElementById(id);
+      const err = document.getElementById(`${id}-err`);
+      if (input) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      if (err) { err.hidden = !msg; err.querySelector('span').textContent = msg; }
+      return !msg;
+    },
+    validate(el) {
+      const rule = this.rules[el.dataset.rule];
+      return rule ? this.show(el.id, rule(el)) : true;
+    },
+    checkFile(input) {
+      const f = input.files[0];
+      let msg = '';
+      if (!f) msg = 'Upload a screenshot of your payment.';
+      else if (!['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(f.type)) msg = 'Upload a JPG, PNG, WebP or PDF file.';
+      else if (f.size > 5 * 1024 * 1024) msg = 'The screenshot must be 5 MB or smaller.';
+      this.fileError = !!msg;
+      return this.show(input.id, msg);
+    },
+    pickFile(e) {
+      const f = e.target.files[0];
+      if (this.preview) URL.revokeObjectURL(this.preview);
+      this.fileName = f ? `${f.name} (${(f.size / 1048576).toFixed(1)} MB)` : '';
+      this.preview = f && f.type.startsWith('image/') ? URL.createObjectURL(f) : '';
+      this.checkFile(e.target);
+    },
+    submit(e) {
+      const form = e.target;
+      let ok = true;
+      form.querySelectorAll('[data-rule]').forEach((el) => { ok = this.validate(el) && ok; });
+      ok = this.checkFile(form.querySelector('input[type=file]')) && ok;
+      if (!ok || this.sending) {
+        e.preventDefault();
+        if (!ok) form.querySelector('[aria-invalid="true"]')?.focus();
+        return;
+      }
+      this.sending = true; // normal POST continues (file upload + redirect to the confirmation page)
+      window.dispatchEvent(new CustomEvent('itsn:track', { detail: { event: 'exam_booking_submit' } }));
+    },
+  }));
+
   /* ---------- Course directory filters (filters server-rendered cards) ---------- */
   Alpine.data('courseDirectory', (initial = {}) => ({
     q: '', cats: [], levels: [], modes: [], sort: 'featured', page: 1, perPage: 12, total: 0, visible: 0, filtersOpen: false, loading: false,

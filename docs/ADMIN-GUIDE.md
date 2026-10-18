@@ -100,3 +100,19 @@ Every photo field shows its recommended size next to the label (e.g. *1280 × 72
 ## Settings
 - **Site settings:** offer bar (on/off, text, button), phone numbers, WhatsApp, email, address, hours, social links, key facts (switch on *Verified* to show a figure), "Training for" texts, Google Analytics ID.
 - **Redirects:** when a page address changes or an old link appears in Search Console as "not found", add `/old-address/` → `/new-address/`.
+
+## Red Hat exam bookings
+
+Public page: `/red-hat-exam-booking-nepal/` (linked from the Red Hat & Linux track page, listed in the sitemap).
+
+**Setup (admin only): Settings → Site settings → Exam booking**
+- Upload the **official payment QR code** (the original PNG/JPG from the bank or wallet app). Until a QR is uploaded, the page shows "Payment QR code coming soon" and the form stays closed.
+- After saving, scan the QR on the live page with a phone and check it opens the right account.
+- Fee (default NPR 35,000), optional text under the QR (e.g. account name), and the list of exams on the form.
+
+**Daily work: Leads → Exam bookings** (admin, manager, front desk). The badge shows how many are pending.
+1. Open a booking with **Review**. The payment screenshot is on the right; open it full size to read the amount, date and transaction ID.
+2. Find the payment in the account statement, then click **Payment verified**. If it can't be found, click **Payment not confirmed** and give the reason.
+3. Book the exam on Red Hat's side using the candidate's Red Hat login and account email, then click **Exam booked** (with the exam date if known) and contact the candidate.
+
+Payment screenshots are stored privately (`storage/app/private/exam-payments/`), never in the public folder, and only signed-in admin, manager and front-desk staff can open them. Deleting a booking also deletes its screenshot. The website never asks for Red Hat passwords.

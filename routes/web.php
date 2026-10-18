@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\EnquiryController;
+use App\Http\Controllers\ExamBookingController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SiteController;
@@ -31,8 +32,16 @@ Route::get('/career-pathways/{slug}', [SiteController::class, 'careerPathway'])-
 Route::get('/courses-index.json', [SeoController::class, 'courseIndex'])->name('courses.index-json');
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
+Route::get('/llms.txt', [SeoController::class, 'llms'])->name('llms');
+Route::get('/feed', [SeoController::class, 'feed'])->name('feed');
 
 Route::post('/enquiries', [EnquiryController::class, 'store'])->middleware('throttle:enquiries')->name('enquiries.store');
+
+// Red Hat exam booking: public page + form (payment proof upload), confirmation, staff-only proof viewer
+Route::get('/red-hat-exam-booking-nepal', [ExamBookingController::class, 'show'])->name('exam-booking');
+Route::post('/red-hat-exam-booking-nepal', [ExamBookingController::class, 'store'])->middleware('throttle:exam-bookings')->name('exam-booking.store');
+Route::get('/red-hat-exam-booking-nepal/submitted', [ExamBookingController::class, 'submitted'])->name('exam-booking.submitted');
+Route::get('/admin/exam-bookings/{examBooking}/proof', [ExamBookingController::class, 'proof'])->name('exam-booking.proof');
 
 // Marketing campaigns: landing pages for ads + pop-up view/click counter
 Route::get('/offer/{slug}', [CampaignController::class, 'show'])->where('slug', '[a-z0-9\-]+')->name('campaigns.show');

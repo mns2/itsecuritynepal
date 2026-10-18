@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\DetectsSpam;
 use App\Mail\NewEnquiry;
 use App\Models\Campaign;
 use App\Models\Course;
 use App\Models\Enquiry;
 use App\Support\Newsletter;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,12 +17,14 @@ use Illuminate\Validation\Rule;
 
 class EnquiryController extends Controller
 {
+    use DetectsSpam;
+
     /** Minimum seconds between page render and submit; faster submissions are almost always bots. */
     private const MIN_FILL_SECONDS = 3;
 
     public function store(Request $request): JsonResponse|RedirectResponse
     {
-        if ($this->looksLikeSpam($request)) {
+        if ($this->looksLikeSpam($request, self::MIN_FILL_SECONDS)) {
             // Respond exactly like a success so bots learn nothing; nothing is stored or emailed.
             return $this->respond($request);
         }
@@ -91,21 +93,6 @@ class EnquiryController extends Controller
         }
 
         return $this->respond($request);
-    }
-
-    private function looksLikeSpam(Request $request): bool
-    {
-        if (filled($request->input('website'))) {
-            return true;
-        }
-
-        try {
-            $issued = (int) decrypt((string) $request->input('issued'));
-        } catch (DecryptException) {
-            return true;
-        }
-
-        return now()->timestamp - $issued < self::MIN_FILL_SECONDS;
     }
 
     private function respond(Request $request): JsonResponse|RedirectResponse

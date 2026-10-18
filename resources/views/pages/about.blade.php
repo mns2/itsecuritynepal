@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @php($a = content('about'))
+@section('schema_type', 'AboutPage')
 @section('title', $a['seo']['title'])
 @section('description', $a['seo']['description'])
 

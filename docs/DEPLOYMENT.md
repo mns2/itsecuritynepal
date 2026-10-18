@@ -143,3 +143,31 @@ Uploaded photos live in `storage/app/public` (served through `public/storage`; r
 **First weeks**
 - [ ] Watch Search Console → Pages → "Not found (404)"; add any missing old URLs in Admin → Redirects.
 - [ ] Check Admin → Enquiries daily; mark leads as contacted / enrolled.
+
+## Search engines on the live domain (checked 2026-10-18)
+
+On 2026-10-18 `https://itsecuritynepal.com/` was serving this Laravel site with the **staging** `.env`. Result: `robots.txt` said
+`Disallow: /`, every page said `noindex, nofollow`, canonicals and the sitemap pointed to `new.itsecuritynepal.com`, and
+`http://` / `www.` redirected to `https://itsecuritynepal.com/public/`. Google drops pages that stay in that state.
+
+**Fixed in code (takes effect once this release is uploaded):**
+- Requests on `itsecuritynepal.com` (config `seo.primary_host`) are indexable and always use `https://itsecuritynepal.com`
+  for canonicals, sitemap, robots.txt, Open Graph and structured data, even with a staging `.env`. `new.itsecuritynepal.com`
+  and other hosts stay `noindex` + `Disallow: /`.
+- The project-root `.htaccess` now does the HTTPS and www → non-www redirects *before* handing the request to `public/`,
+  and redirects any `/public/...` URL to the clean URL. (Not testable locally: check on the server.)
+
+**Still do on the server (cPanel):**
+1. In the live site's `.env`: `APP_ENV=production`, `APP_URL=https://itsecuritynepal.com`, `APP_DEBUG=false`, then
+   `php artisan optimize`. If staging and live share one folder, give staging its own folder and `.env`.
+2. Better still, point the domain's document root at the project's `public/` folder (cPanel → Domains).
+3. `php artisan migrate --force` (exam bookings table, DCCOR summary fix).
+4. Check with curl, all expected results:
+   - `curl -I http://itsecuritynepal.com/about/` → one 301 to `https://itsecuritynepal.com/about/`
+   - `curl -I https://www.itsecuritynepal.com/` → one 301 to `https://itsecuritynepal.com/`
+   - `curl -I https://itsecuritynepal.com/public/about/` → 301 to `https://itsecuritynepal.com/about/`
+   - `curl https://itsecuritynepal.com/robots.txt` → no `Disallow: /` line; `Sitemap: https://itsecuritynepal.com/sitemap.xml`
+   - `curl -s https://itsecuritynepal.com/ | grep -E 'canonical|robots'` → `https://itsecuritynepal.com/` and `index, follow`
+   - `/sitemap.xml`, `/llms.txt` and `/feed/` load and only name `https://itsecuritynepal.com/...`
+5. Optional `.env` switches: `SEO_ALLOW_AI_CRAWLERS=false` blocks AI crawlers (GPTBot, ClaudeBot, PerplexityBot,
+   Google-Extended…) in robots.txt; `SEO_INDEXING=true|false` overrides the automatic rule.
