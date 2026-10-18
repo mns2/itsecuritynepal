@@ -110,9 +110,23 @@ Public page: `/red-hat-exam-booking-nepal/` (linked from the Red Hat & Linux tra
 - After saving, scan the QR on the live page with a phone and check it opens the right account.
 - Fee (default NPR 35,000), optional text under the QR (e.g. account name), and the list of exams on the form.
 
-**Daily work: Leads → Exam bookings** (admin, manager, front desk). The badge shows how many are pending.
+**How a booking moves (the candidate is emailed at each step):**
+
+| Status | What happened | Who acts |
+|---|---|---|
+| Email not confirmed | Form sent with payment screenshot; confirmation link emailed to the candidate | Candidate clicks the link |
+| Pending verification | Email confirmed; staff alerted by email | Staff check the payment |
+| Payment verified | Staff found the payment; candidate told "exam booking in progress" | Staff book the exam with Red Hat |
+| Exam booked | Exam booked; candidate gets the confirmation with date and time | Done |
+| Payment not confirmed | Payment not found; candidate asked to call | Staff follow up |
+
+**Daily work: Leads → Exam bookings** (admin, manager, front desk). The badge counts bookings waiting for a payment check.
 1. Open a booking with **Review**. The payment screenshot is on the right; open it full size to read the amount, date and transaction ID.
-2. Find the payment in the account statement, then click **Payment verified**. If it can't be found, click **Payment not confirmed** and give the reason.
-3. Book the exam on Red Hat's side using the candidate's Red Hat login and account email, then click **Exam booked** (with the exam date if known) and contact the candidate.
+2. Find the payment in the account statement, then click **Payment verified**. If it can't be found, click **Payment not confirmed** and give the reason (kept in staff notes, not emailed).
+3. Book the exam with Red Hat using the candidate's Red Hat login and account email, then click **Exam booked** and enter the exam date and time.
+4. Use the buttons, not the Status field: only the buttons email the candidate. If an email fails, a red message tells you to phone the candidate.
+5. "Email not confirmed" bookings: **Resend confirmation email**, or after confirming by phone, **Mark email confirmed**.
+
+Candidates follow progress at `/red-hat-exam-booking-nepal/track/` (booking reference + email) or through the link in each email. **Emails need working SMTP settings in `.env`**; without them, candidates cannot confirm their email and every booking waits as "Email not confirmed".
 
 Payment screenshots are stored privately (`storage/app/private/exam-payments/`), never in the public folder, and only signed-in admin, manager and front-desk staff can open them. Deleting a booking also deletes its screenshot. The website never asks for Red Hat passwords.

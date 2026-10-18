@@ -70,7 +70,7 @@ class SeoController extends Controller
         if (! \App\Support\Seo::indexable()) {
             $lines = ['User-agent: *', 'Disallow: /']; // never index staging / local copies
         } else {
-            $lines = ['User-agent: *', 'Disallow: /admin', 'Disallow: /trainer', 'Disallow: /livewire', 'Disallow: /enquiries', 'Disallow: /newsletter/', 'Disallow: /*?q=', ''];
+            $lines = ['User-agent: *', 'Disallow: /admin', 'Disallow: /trainer', 'Disallow: /livewire', 'Disallow: /enquiries', 'Disallow: /newsletter/', 'Disallow: /exam-booking/', 'Disallow: /*?q=', ''];
             if (! config('seo.allow_ai_crawlers')) {
                 foreach (['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'PerplexityBot', 'Google-Extended', 'Applebot-Extended', 'CCBot', 'Bytespider'] as $bot) {
                     $lines[] = "User-agent: {$bot}";

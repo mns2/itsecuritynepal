@@ -34,6 +34,7 @@ $excludeDirs = @('node_modules', 'vendor', 'release', 'tests', '.git', '.idea', 
 & robocopy $root $stage /E /NFL /NDL /NJH /NJS /NP `
     /XD ($excludeDirs | ForEach-Object { Join-Path $root $_ }) `
         (Join-Path $root 'storage\logs') (Join-Path $root 'storage\framework') (Join-Path $root 'storage\app\private') (Join-Path $root 'public\storage') `
+        (Join-Path $root 'storage\app\public\payment') (Join-Path $root 'storage\app\public\og') `
     /XF .env .env.backup .env.production database.sqlite hot .phpunit.result.cache phpunit.xml | Out-Null
 if ($LASTEXITCODE -ge 8) { throw "robocopy failed (exit $LASTEXITCODE)" }
 

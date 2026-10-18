@@ -39,7 +39,8 @@ class ExamBookingForm
                 ]),
             Section::make('Review')->columnSpanFull()->schema([
                 Grid::make(2)->schema([
-                    Select::make('status')->options(ExamBooking::STATUSES)->required()->native(false),
+                    Select::make('status')->options(ExamBooking::STATUSES)->required()->native(false)
+                        ->helperText('Prefer the buttons at the top: they also email the candidate. Changing this field does not.'),
                     DateTimePicker::make('exam_at')->label('Exam date and time (once booked)')->native(false)->seconds(false),
                 ]),
                 Textarea::make('staff_notes')->rows(4)->placeholder('Payment checked against statement, exam booked for…, reason if not confirmed…'),

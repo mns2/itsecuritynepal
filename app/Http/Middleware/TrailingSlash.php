@@ -21,7 +21,7 @@ class TrailingSlash
             && $path !== '/'
             && ! str_ends_with($path, '/')
             && ! str_contains(basename($path), '.')
-            && ! preg_match('#^/(admin|trainer|livewire|filament|storage|build|up|newsletter|campaigns|offer-track)(/|$)#', $path)) {
+            && ! preg_match('#^/(admin|trainer|livewire|filament|storage|build|up|newsletter|campaigns|offer-track|exam-booking)(/|$)#', $path)) {
             $query = $request->getQueryString();
 
             // Build the URL by hand: Laravel's URL generator would strip the trailing slash again.

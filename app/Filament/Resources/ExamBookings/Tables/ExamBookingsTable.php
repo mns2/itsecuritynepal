@@ -13,7 +13,7 @@ class ExamBookingsTable
     public static function statusColor(?string $state): string
     {
         return match ($state) {
-            'pending' => 'warning', 'verified' => 'info', 'booked' => 'success', 'rejected' => 'danger', default => 'gray',
+            'unverified' => 'gray', 'pending' => 'warning', 'verified' => 'info', 'booked' => 'success', 'rejected' => 'danger', default => 'gray',
         };
     }
 

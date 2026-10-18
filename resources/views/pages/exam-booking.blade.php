@@ -12,7 +12,7 @@
         ['q' => 'How much does it cost to book a Red Hat exam in Nepal through IT Security Nepal?', 'a' => "The booking fee is {$feeLabel} per exam, paid in Nepali Rupees by scanning the IT Security Nepal payment QR code on this page."],
         ['q' => 'Which Red Hat exams can I book?', 'a' => 'You can request '.($examNames->isNotEmpty() ? $examNames->join(', ', ' and ') : 'Red Hat exams').'. If you need a different Red Hat exam, choose "Other" and our team will confirm it with you.'],
         ['q' => 'Do you need my Red Hat password?', 'a' => 'No. We only ask for your Red Hat login (username) and the email address on your Red Hat account. Never share your Red Hat password with anyone, including our staff.'],
-        ['q' => 'What happens after I submit the booking form?', 'a' => 'You get a booking reference straight away. Your payment and exam booking stay pending until our team checks the payment against our account. We then contact you by phone or email to confirm the exam booking.'],
+        ['q' => 'What happens after I submit the booking form?', 'a' => 'You get a booking reference straight away and an email with a confirmation link. Once you confirm your email, our team checks your payment against our account and emails you when it is verified. Booking the exam with Red Hat can then take some time; we email you again as soon as your exam booking is confirmed. You can follow each step on the Track your booking page.'],
         ['q' => 'What should the payment screenshot show?', 'a' => "A clear screenshot or PDF receipt that shows the amount ({$feeLabel}), the date and time, and the transaction ID or reference from your bank or wallet app. JPG, PNG, WebP or PDF, up to 5 MB."],
         ['q' => 'Do I need a Red Hat account before booking?', 'a' => 'Yes. Create a free Red Hat account at redhat.com first, then enter its login and email address in the booking form.'],
     ];
@@ -50,6 +50,7 @@
                 <a href="#book" class="btn btn-primary btn-lg">Book your exam</a>
                 @if ($phone)<a href="tel:{{ $phone['tel'] }}" class="btn btn-outline btn-lg"><x-icon name="phone" class="size-5" /> {{ $phone['label'] }}</a>@endif
             </div>
+            <p class="mt-4 text-sm text-ink-muted">Already booked? <a href="{{ route('exam-booking.track') }}/">Track your booking</a> with your reference and email.</p>
         </div>
         <div class="card p-6 sm:p-8">
             <p class="text-eyebrow text-action">Exam booking fee</p>
@@ -73,7 +74,7 @@
                 ['user-round', 'Have a Red Hat account', 'Create a free account at redhat.com if you do not have one. You will need its login and email.'],
                 ['scan-qr-code', 'Pay '.$feeLabel, 'Scan the IT Security Nepal QR code below with your bank or wallet app and pay the exact fee.'],
                 ['upload', 'Submit the form', 'Enter your details and Red Hat account, choose the exam and upload your payment screenshot.'],
-                ['calendar-check', 'We verify and confirm', 'Our team checks your payment, then contacts you to confirm your exam booking.'],
+                ['calendar-check', 'Confirm and track', 'Confirm your email from our message. We verify your payment, book your exam and email you at each step.'],
             ] as $i => [$icon, $title, $text])
                 <li class="card p-5">
                     <div class="flex items-center gap-3"><span class="ic-tile"><x-icon :name="$icon" class="size-5" /></span><span class="font-mono text-sm font-semibold text-ink-muted">Step {{ $i + 1 }}</span></div>
@@ -92,12 +93,20 @@
             <h2 id="xb-book" class="text-h3">1. Pay by QR code</h2>
             <p class="mt-1 text-sm text-ink-muted">Amount: <strong class="text-navy-700">{{ $feeLabel }}</strong></p>
             @if ($qr)
-                <figure class="mt-5">
-                    <img src="{{ $qr }}" alt="IT Security Nepal official payment QR code" width="320" height="320" class="mx-auto aspect-square w-full max-w-[18rem] rounded-lg border border-line bg-white object-contain p-3">
-                    @if (filled($settings['payee_note']))<figcaption class="mt-3 text-center text-sm font-medium text-navy-700">{{ $settings['payee_note'] }}</figcaption>@endif
-                </figure>
-                <a href="{{ $qr }}" download="itsecuritynepal-payment-qr" class="btn btn-outline btn-block mt-4"><x-icon name="image" class="size-5" /> Save QR to your phone</a>
-                <p class="mt-2 text-xs text-ink-muted">Paying on this phone? Save the QR, then open it from your gallery in your bank or wallet app.</p>
+                {{-- QR stays hidden until the visitor asks for it (native <details>: works without JavaScript, keyboard and screen-reader friendly) --}}
+                <details class="group mt-5">
+                    <summary class="btn btn-primary btn-block cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                        <x-icon name="qr-code" class="size-5" />
+                        <span class="group-open:hidden">Show payment QR code</span><span class="hidden group-open:inline">Hide payment QR code</span>
+                    </summary>
+                    <figure class="mt-4">
+                        <img src="{{ $qr }}" alt="IT Security Nepal official payment QR code" width="320" height="320" loading="lazy" class="mx-auto aspect-square w-full max-w-[18rem] rounded-lg border border-line bg-white object-contain p-3">
+                        @if (filled($settings['payee_note']))<figcaption class="mt-3 text-center text-sm font-medium text-navy-700">{{ $settings['payee_note'] }}</figcaption>@endif
+                    </figure>
+                    <a href="{{ $qr }}" download="itsecuritynepal-payment-qr" class="btn btn-outline btn-block mt-4"><x-icon name="image" class="size-5" /> Save QR to your phone</a>
+                    <p class="mt-2 text-xs text-ink-muted">Paying on this phone? Save the QR, then open it from your gallery in your bank or wallet app.</p>
+                </details>
+                <p class="mt-3 text-xs text-ink-muted">Pay exactly {{ $feeLabel }}, then fill in the booking form.</p>
             @else
                 <div class="mt-5 rounded-lg border border-sun-400 bg-sun-50 p-5 text-sm" role="status">
                     <p class="flex items-center gap-2 font-semibold text-navy-700"><x-icon name="info" class="size-5" /> Payment QR code coming soon</p>
@@ -140,7 +149,7 @@
                     @foreach ([
                         ['name', 'Full name', 'text', 'name', '', 120, 'As on your citizenship or passport.'],
                         ['phone', 'Phone number', 'tel', 'tel', '98XXXXXXXX', 30, ''],
-                        ['email', 'Email address', 'email', 'email', 'you@example.com', 160, ''],
+                        ['email', 'Email address', 'email', 'email', 'you@example.com', 160, 'We send a confirmation link and booking updates here.'],
                     ] as [$f, $label, $type, $ac, $ph, $max, $hint])
                         <div @class(['sm:col-span-2' => $f === 'email' || $f === 'name'])>
                             <label for="{{ $field }}-{{ $f }}" class="field-label">{{ $label }}</label>

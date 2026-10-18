@@ -42,6 +42,12 @@ Route::get('/red-hat-exam-booking-nepal', [ExamBookingController::class, 'show']
 Route::post('/red-hat-exam-booking-nepal', [ExamBookingController::class, 'store'])->middleware('throttle:exam-bookings')->name('exam-booking.store');
 Route::get('/red-hat-exam-booking-nepal/submitted', [ExamBookingController::class, 'submitted'])->name('exam-booking.submitted');
 Route::get('/admin/exam-bookings/{examBooking}/proof', [ExamBookingController::class, 'proof'])->name('exam-booking.proof');
+Route::get('/red-hat-exam-booking-nepal/track', [ExamBookingController::class, 'track'])->name('exam-booking.track');
+Route::post('/red-hat-exam-booking-nepal/track', [ExamBookingController::class, 'lookup'])->middleware('throttle:10,1')->name('exam-booking.lookup');
+Route::post('/red-hat-exam-booking-nepal/track/{examBooking}/resend', [ExamBookingController::class, 'resend'])->middleware('throttle:3,10')->name('exam-booking.resend');
+// Signed links in emails (kept out of the trailing-slash redirect, which would break the signature)
+Route::get('/exam-booking/verify/{examBooking}', [ExamBookingController::class, 'verify'])->middleware(['signed', 'throttle:20,1'])->name('exam-booking.verify');
+Route::get('/exam-booking/open/{examBooking}', [ExamBookingController::class, 'open'])->middleware(['signed', 'throttle:20,1'])->name('exam-booking.open');
 
 // Marketing campaigns: landing pages for ads + pop-up view/click counter
 Route::get('/offer/{slug}', [CampaignController::class, 'show'])->where('slug', '[a-z0-9\-]+')->name('campaigns.show');

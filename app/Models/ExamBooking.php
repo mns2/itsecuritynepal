@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 /** A Red Hat exam booking request with its payment proof. Created by the public form, reviewed by staff (Admin → Exam bookings). */
 class ExamBooking extends Model
 {
     public const STATUSES = [
+        'unverified' => 'Email not confirmed',
         'pending' => 'Pending verification',
         'verified' => 'Payment verified',
         'booked' => 'Exam booked',
@@ -23,9 +25,12 @@ class ExamBooking extends Model
 
     public const PROOF_DIR = 'exam-payments';
 
+    /** How long the email confirmation and tracking links in emails stay valid. */
+    public const LINK_DAYS = 30;
+
     protected $guarded = ['id'];
 
-    protected $casts = ['exam_at' => 'datetime', 'reviewed_at' => 'datetime', 'fee_npr' => 'integer'];
+    protected $casts = ['exam_at' => 'datetime', 'reviewed_at' => 'datetime', 'email_verified_at' => 'datetime', 'confirmation_sent_at' => 'datetime', 'fee_npr' => 'integer'];
 
     protected static function booted(): void
     {
@@ -83,6 +88,23 @@ class ExamBooking extends Model
         } while (preg_match('/[O0Il1]/', substr($ref, 4)) || self::where('reference', $ref)->exists());
 
         return $ref;
+    }
+
+    /** Link in the confirmation email: confirms the address and opens the tracking page. */
+    public function verifyUrl(): string
+    {
+        return URL::temporarySignedRoute('exam-booking.verify', now()->addDays(self::LINK_DAYS), ['examBooking' => $this->id]);
+    }
+
+    /** Link in status-update emails: opens this booking on the tracking page without typing the reference. */
+    public function trackUrl(): string
+    {
+        return URL::temporarySignedRoute('exam-booking.open', now()->addDays(self::LINK_DAYS), ['examBooking' => $this->id]);
+    }
+
+    public function emailVerified(): bool
+    {
+        return $this->email_verified_at !== null;
     }
 
     public function reviewer(): BelongsTo

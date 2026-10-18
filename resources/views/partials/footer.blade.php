@@ -13,6 +13,24 @@
             </div>
         </div>
     @endif
+    {{-- Red Hat exam booking: under the newsletter, above the footer columns (not repeated on the booking pages themselves) --}}
+    @unless (request()->is('red-hat-exam-booking-nepal', 'red-hat-exam-booking-nepal/*'))
+        <div class="border-b border-white/10">
+            <div class="container-page flex flex-col gap-5 py-8 lg:flex-row lg:items-center lg:justify-between">
+                <div class="flex gap-4">
+                    <span class="hidden size-11 shrink-0 place-items-center rounded-[10px] bg-sun-400 text-navy-700 sm:grid"><x-icon name="badge-check" class="size-5" /></span>
+                    <div>
+                        <p class="font-display text-xl font-bold text-white">Book your Red Hat exam in Nepal</p>
+                        <p class="mt-1.5 max-w-[62ch] text-[0.9375rem]">RHCSA, RHCE and more: pay {{ 'NPR '.number_format((int) \App\Models\ExamBooking::settings()['fee_npr']) }} by QR, upload your payment screenshot and confirm your email. We verify the payment, book your exam and email you at every step.</p>
+                    </div>
+                </div>
+                <div class="flex shrink-0 flex-wrap gap-2.5">
+                    <a href="/red-hat-exam-booking-nepal/" class="btn btn-sun">Book Red Hat Exam <x-icon name="arrow-right" class="size-4" /></a>
+                    <a href="/red-hat-exam-booking-nepal/track/" class="btn border-white/30 bg-transparent text-white hover:border-sun-300 hover:text-sun-300">Track your booking</a>
+                </div>
+            </div>
+        </div>
+    @endunless
     <div class="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.4fr] lg:gap-8 lg:py-16">
         <div class="max-w-sm">
             <a href="/" class="inline-block rounded-md bg-white p-2.5" aria-label="IT Security Nepal home">

@@ -66,7 +66,7 @@
     <div class="hidden border-y border-line lg:block">
         <div class="container-page flex h-[2.875rem] items-center justify-between gap-6 text-[0.84375rem]">
             <nav aria-label="Main">
-                <ul class="flex items-center gap-5 xl:gap-6">
+                <ul class="flex items-center gap-5 2xl:gap-6">
                     @foreach ($nav as $item)
                         <li><a href="{{ $item['url'] }}" @class(['inline-flex items-center gap-1.5 font-medium whitespace-nowrap no-underline hover:text-action', 'text-action' => $current === $item['url'], 'text-ink' => $current !== $item['url']]) @if ($current === $item['url']) aria-current="page" @endif>
                             <span class="text-action"><x-icon :name="$item['icon']" class="size-[15px]" /></span>{{ $item['name'] }}@if (! empty($item['tag']))<span class="rounded-full bg-sun-400 px-1.5 py-0.5 text-[0.65625rem] leading-none font-bold text-navy-700">{{ $item['tag'] }}</span>@endif
