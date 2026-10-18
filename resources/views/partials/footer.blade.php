@@ -80,6 +80,13 @@
             <p>© {{ now()->year }} {{ $site['brand']['name'] ?? 'IT Security Nepal' }}. All rights reserved. {{ content('global.copyright_note') }}</p>
             <ul class="flex gap-5">
                 <li><a href="/privacy-policy/" class="text-navy-100 hover:text-sun-300">Privacy Policy</a></li>
+                @if (filled($site['analytics']['ga4_id'] ?? null) || filled(config('services.analytics.ga4')))
+                    {{-- Always available: stops Google Analytics in this browser (see partials/consent) --}}
+                    <li x-data="analyticsOptOut">
+                        <button type="button" class="text-navy-100 hover:text-sun-300" x-show="!out" @click="optOut()">Analytics opt-out</button>
+                        <span x-show="out" x-cloak class="text-navy-100">Analytics off in this browser</span>
+                    </li>
+                @endif
                 <li><a href="/terms-and-conditions/" class="text-navy-100 hover:text-sun-300">Terms and Conditions</a></li>
             </ul>
         </div>

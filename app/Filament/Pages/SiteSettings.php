@@ -221,7 +221,9 @@ class SiteSettings extends Page
                 ]),
                 Tab::make('Analytics')->icon('heroicon-o-presentation-chart-line')->schema([
                     TextInput::make('analytics.ga4_id')->label('Google Analytics 4 measurement ID')->placeholder('G-XXXXXXXXXX')
-                        ->helperText('Loaded only after the visitor accepts the cookie banner. Leave empty to disable analytics.'),
+                        ->helperText('Leave empty to disable analytics.'),
+                    Toggle::make('analytics.require_consent')->label('Ask visitors before loading analytics (cookie banner)')
+                        ->helperText('Off: analytics loads for everyone without a banner. Visitors in the EU, UK and Switzerland are counted without analytics cookies (Google Consent Mode), ads features stay off, and a footer "Analytics opt-out" link lets anyone opt out. On: nothing loads until the visitor clicks Accept.'),
                 ]),
             ]),
         ]);

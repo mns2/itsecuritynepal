@@ -128,4 +128,20 @@ class SearchVisibilityTest extends TestCase
         $this->assertStringNotContainsString('/privacy-policy/', $sitemap);
         $this->get('https://itsecuritynepal.com'.'/privacy-policy/')->assertSee('noindex', false);
     }
+
+    public function test_analytics_loads_without_banner_by_default_and_banner_can_be_switched_back_on(): void
+    {
+        \App\Models\Setting::put('analytics', ['ga4_id' => 'G-TEST000000']);
+        $html = $this->get('https://itsecuritynepal.com/')->assertOk()->getContent();
+        $this->assertStringContainsString('askFirst: false', $html);
+        $this->assertStringContainsString("\u0022GB\u0022", $html); // EEA/UK/CH get cookieless measurement
+        $this->assertStringContainsString("ad_storage: 'denied'", $html);
+        $this->assertStringContainsString('Analytics opt-out', $html);
+
+        \App\Models\Setting::put('analytics', ['ga4_id' => 'G-TEST000000', 'require_consent' => true]);
+        $this->assertStringContainsString('askFirst: true', $this->get('https://itsecuritynepal.com/')->getContent());
+
+        \App\Models\Setting::put('analytics', ['ga4_id' => null]);
+        $this->get('https://itsecuritynepal.com/')->assertDontSee('googletagmanager.com/gtag', false)->assertDontSee('Analytics opt-out');
+    }
 }

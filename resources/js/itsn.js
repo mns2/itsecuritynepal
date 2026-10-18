@@ -154,6 +154,18 @@ document.addEventListener('alpine:init', () => {
     },
   }));
 
+  /* ---------- Footer "Analytics opt-out": remembered in this browser; partials/consent stops GA ---------- */
+  Alpine.data('analyticsOptOut', () => ({
+    out: false,
+    init() {
+      try { this.out = localStorage.getItem('itsn-consent') === 'no'; } catch (e) {}
+    },
+    optOut() {
+      window.dispatchEvent(new CustomEvent('itsn:analytics-opt-out'));
+      this.out = true;
+    },
+  }));
+
   /* ---------- Course directory filters (filters server-rendered cards) ---------- */
   Alpine.data('courseDirectory', (initial = {}) => ({
     q: '', cats: [], levels: [], modes: [], sort: 'featured', page: 1, perPage: 12, total: 0, visible: 0, filtersOpen: false, loading: false,
